@@ -12,10 +12,11 @@ def message_signal(sender, instance, **kwargs):
         json_form = """
 {
      "sender": 0,
-     "msg": """ + '\"' + instance.chron + "\"" + """
+     "chron": """ + '\"' + instance.chron + "\"" + """,
+     "audio": """ + '\"' + instance.audio + "\"" + """
 }"""
-        mqtt_publisher.main().publish(str(instance.topic),json_form)
+        mqtt_publisher.main(topic=str(instance.topic), message=json_form)
         now = datetime.now()
-        print(now, "Topic: {} / Message-POST: {} published-by: {}".format(instance.topic, instance.chron, instance.sender))
+        print(str(now), "Topic: {} / Message-POST: {} published-by: {}".format(instance.topic, instance.chron, instance.sender))
     else :
         pass
