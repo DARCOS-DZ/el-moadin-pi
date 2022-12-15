@@ -1,5 +1,4 @@
 import paho.mqtt.client as mqtt
-from .models import *
 import json
 from datetime import datetime
 # The callback for when the client receives a CONNACK response from the server.
@@ -13,6 +12,7 @@ def on_connect(client, userdata, flags, rc):
 
 # The callback for when a PUBLISH message is received from the server.
 def on_message(client, userdata, msg):
+    from .models import Topics, Job
     if Topics.objects.filter(name=msg.topic):
         topic = Topics.objects.get(name=msg.topic)
     else:
@@ -34,30 +34,20 @@ def on_message(client, userdata, msg):
         print("Invalid Json format")
         print(e)
 
+def on_disconnect(client, userdata, rc):
+    client.loop_stop(force=False)
+    if rc != 0:
+        print("Unexpected disconnection.")
+    else:
+        print("Disconnected")
+
 def main():
     client = mqtt.Client(client_id='1', clean_session=False)
     client.on_connect = on_connect
     client.on_message = on_message
-    # client.connect_async("192.168.0.155", 1883, 60)
-    client.connect_async("192.168.0.155", 1883, 60)
+    client.on_disconnect = on_disconnect
+    client.connect_async("51.195.148.231", 1883, 60)
     return client
-    # for later in the project
-    # paho.mqtt.publish.single(
-	# 	topic='[topic]',
-	# 	payload='[message]',
-	# 	qos=2,
-	# 	hostname='[hostname]',
-	# 	port=8883,
-	# 	client_id='[clientid]',
-	# 	auth={
-	# 		'username': '[username]',
-	# 		'password': '[password]'
-	# 	},
-	# 	tls={
-	# 		'ca_certs': '/etc/ssl/certs/DST_Root_CA_X3.pem',
-	# 		'tls_version': ssl.PROTOCOL_TLSv1_2
-	# 	}
-	# )
 
 if __name__ == '__main__':
 	main()
