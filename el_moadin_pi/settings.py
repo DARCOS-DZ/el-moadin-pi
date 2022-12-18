@@ -38,6 +38,9 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "mqtt",
+    "adan",
+    'constance',
+    'constance.backends.database',
 ]
 
 MIDDLEWARE = [
@@ -122,3 +125,15 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# constance settings
+
+CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
+
+CONSTANCE_ADDITIONAL_FIELDS = {
+    'json_field': ['django.forms.JSONField', {}]
+}
+
+CONSTANCE_CONFIG = {
+    'PRAYER_SOURCE': ("{}", 'json_field'),
+}
