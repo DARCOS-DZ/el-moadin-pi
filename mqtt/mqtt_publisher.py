@@ -9,12 +9,12 @@ def on_connect(client, userdata, flags, rc):
 
     # Subscribing in on_connect() means that if we lose the connection and
     # reconnect then subscriptions will be renewed.
-    client.subscribe("#", qos=1)
+    client.subscribe("raspberry_pi/#", qos=1)
 
 def main(topic, message):
     client = mqtt.Client(client_id='1', clean_session=False)
     client.on_connect = on_connect
-    client.connect("51.195.148.231", 1883, 60)
+    client.connect("192.168.0.108", 1883, 60)
     client.publish(topic, message, qos=1)
 
 if __name__ == '__main__':

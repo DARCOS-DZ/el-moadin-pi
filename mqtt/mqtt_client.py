@@ -8,7 +8,7 @@ def on_connect(client, userdata, flags, rc):
 
     # Subscribing in on_connect() means that if we lose the connection and
     # reconnect then subscriptions will be renewed.
-    client.subscribe("#", qos=1)
+    client.subscribe("raspberry_pi/#", qos=1)
 
 # The callback for when a PUBLISH message is received from the server.
 def on_message(client, userdata, msg):
@@ -38,7 +38,7 @@ def main():
     client = mqtt.Client(client_id='1', clean_session=False)
     client.on_connect = on_connect
     client.on_message = on_message
-    client.connect("51.195.148.231", 1883, 60)
+    client.connect_async("192.168.0.108", 1883, 60)
     return client
 
 if __name__ == '__main__':
