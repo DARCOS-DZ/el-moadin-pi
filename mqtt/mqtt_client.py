@@ -43,7 +43,7 @@ def main():
     client = mqtt.Client(client_id='ahmed', clean_session=False)
     client.on_connect = on_connect
     client.on_message = on_message
-    client.connect_async("192.168.0.108", 1883, 60)
+    client.connect_async("51.195.148.231", 1883, 60)
     return client
 
 if __name__ == '__main__':
