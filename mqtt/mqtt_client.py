@@ -28,14 +28,19 @@ def on_message(client, userdata, msg):
             message.save()
             now = datetime.now()
             print(now, "\nFrom Topic: {} \nAudio file path: {} \nIs scheduled for: {} \npublished by: {}".format(topic, json_convert["audio"], json_convert["chron"], json_convert["sender"]))
-        else:
-          pass
+        if json_convert["operation"] == "transfer":
+          if json_convert["data"]["model"] == "state":
+              from adan.models import State
+              state = State(name=json_convert["data"]["name"], offset_time=json_convert["data"]["offset_time"])
+              state.save()
+              now = datetime.now()
+              print("state ", json_convert["data"]["name"], "recorded with offset time", "test")
     except Exception as e:
         print("Invalid Json format")
         print(e)
 
 def main():
-    client = mqtt.Client(client_id='1', clean_session=False)
+    client = mqtt.Client(client_id='ahmed', clean_session=False)
     client.on_connect = on_connect
     client.on_message = on_message
     client.connect_async("192.168.0.108", 1883, 60)
