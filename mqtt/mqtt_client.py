@@ -35,6 +35,8 @@ def on_message(client, userdata, msg):
               state.save()
               now = datetime.now()
               print("state ", json_convert["data"]["name"], "recorded with offset time", "test")
+          else :
+            pass
     except Exception as e:
         print("Invalid Json format")
         print(e)
