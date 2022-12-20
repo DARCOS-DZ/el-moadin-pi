@@ -1,7 +1,7 @@
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 from .models import *
-
+from django.conf import settings
 
 @receiver(post_save, sender=LiveEvent)
 def message_signal(sender, instance, **kwargs):
@@ -16,5 +16,12 @@ def message_signal(sender, instance, **kwargs):
         with path.open(mode='rb') as f:
             instance.audio = File(f, name=path.name)
             instance.save()
+        import pygame
+        absolute_path = str(settings.BASE_DIR) + instance.audio.url
+        pygame.mixer.init()
+        sound = pygame.mixer.Sound()
+        playing = sound.play()
+        while playing.get_busy() == True:
+            continue
     except Exception as e:
         pass
