@@ -12,34 +12,31 @@ def on_connect(client, userdata, flags, rc):
 
 # The callback for when a PUBLISH message is received from the server.
 def on_message(client, userdata, msg):
-    from .models import Topics, Job
-    if Topics.objects.filter(name=msg.topic):
-        topic = Topics.objects.get(name=msg.topic)
-    else:
-        topic_creation = Topics(name=msg.topic)
-        topic_creation.save()
-        topic = Topics.objects.get(name=topic_creation)
-
     try:
         brut_text = str(msg.payload.decode("utf-8"))
-        json_convert = json.loads(brut_text)
-        if json_convert["sender"] == 1:
-            message = Job(topic=topic, chron=json_convert["chron"], sender=json_convert["sender"], audio=json_convert["audio"])
-            message.save()
-            now = datetime.now()
-            print(now, "\nFrom Topic: {} \nAudio file path: {} \nIs scheduled for: {} \npublished by: {}".format(topic, json_convert["audio"], json_convert["chron"], json_convert["sender"]))
-        if json_convert["operation"] == "transfer":
-          if json_convert["data"]["model"] == "state":
-              from adan.models import State
-              state = State(name=json_convert["data"]["name"], offset_time=json_convert["data"]["offset_time"])
-              state.save()
-              now = datetime.now()
-              print("state ", json_convert["data"]["name"], "recorded with offset time", "test")
-          else :
-            pass
+        json_msg = json.loads(brut_text)
+        if json_msg["operation"] == "transfer":
+            if json_msg["data"]["model"] == "PrayerAudio":
+                from adan.models import PrayerAudio
+                prayer_audio = PrayerAudio(audio=json_msg["data"]["audio"], prayer=json_msg["data"]["prayer"], audio_duration=json_msg["data"]["audio_duration"])
+                prayer_audio.save()
+                now = datetime.now()
+                print("Prayer audio :", json_msg["data"]["audio"], "recorded for", json_msg["data"]["prayer"], "prayer", "with a duration of", json_msg["data"]["audio_duration"])
+            if json_msg["data"]["model"] == "LiveEvent":
+                from adan.models import LiveEvent
+                live_envent = LiveEvent(audio=json_msg["data"]["audio"], audio_duration=json_msg["data"]["audio_duration"])
+                live_envent.save()
+                now = datetime.now()
+                print("Live Event :", live_envent.audio, "with a duration of", live_envent.audio_duration, "has been successfully recorded")
+            if json_msg["data"]["model"] == "PrayerEvent":
+                from adan.models import PrayerEvent
+                prayer_event = PrayerEvent(type=json_msg["data"]["type"], repeated=json_msg["data"]["repeated"], prayer=json_msg["data"]["prayer"], audio=json_msg["data"]["audio"], audio_duration=json_msg["data"]["audio_duration"])
+                prayer_event.save()
+                now = datetime.now()
+                print("Prayer Event :", prayer_event.type, prayer_event.prayer, "with a repreat status ==", prayer_event.repeated, ", & audio file =", prayer_event.audio, "with a duration of :", prayer_event.audio_duration, "has been successfully recorded")
     except Exception as e:
-        print("Invalid Json format")
-        print(e)
+        print(e) 
+
 
 def main():
     client = mqtt.Client(client_id='ahmed', clean_session=False)
