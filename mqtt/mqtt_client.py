@@ -4,7 +4,7 @@ from datetime import datetime
 # The callback for when the client receives a CONNACK response from the server.
 
 def on_connect(client, userdata, flags, rc):
-    print("\n",datetime.now(), "  ", "Connected with result code "+str(rc) + "\n")
+    # print("\n",datetime.now(), "  ", "Connected with result code "+str(rc) + "\n")
 
     # Subscribing in on_connect() means that if we lose the connection and
     # reconnect then subscriptions will be renewed.
@@ -35,7 +35,7 @@ def on_message(client, userdata, msg):
                 now = datetime.now()
                 print("Prayer Event :", prayer_event.type, prayer_event.prayer, "with a repreat status ==", prayer_event.repeated, ", & audio file =", prayer_event.audio, "with a duration of :", prayer_event.audio_duration, "has been successfully recorded")
     except Exception as e:
-        print(e) 
+        print(e)
 
 
 def main():
