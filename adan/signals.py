@@ -12,10 +12,9 @@ def message_signal(sender, instance, **kwargs):
     try:
         download  = wget.download(audio, out="media")
         downloaded_file = str(download).encode()
-        print(downloaded_file)
         path = Path(downloaded_file.decode("utf-8"))
         with path.open(mode='rb') as f:
             instance.audio = File(f, name=path.name)
             instance.save()
     except Exception as e:
-        pass 
+        pass
