@@ -19,9 +19,9 @@ def message_signal(sender, instance, **kwargs):
         import pygame
         absolute_path = str(settings.BASE_DIR) + instance.audio.url
         pygame.mixer.init()
-        sound = pygame.mixer.Sound()
-        playing = sound.play()
-        while playing.get_busy() == True:
-            continue
+        mixer.music.load(absolute_path)
+        mixer.music.set_volume(0.7)
+        mixer.music.play()
+
     except Exception as e:
         pass
