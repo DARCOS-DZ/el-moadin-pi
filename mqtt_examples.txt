@@ -31,3 +31,14 @@
       "audio_duration":2
    }
 }
+
+
+{
+   "operation":"transfer",
+   "sender":0,
+   "data":{
+      "model":"LiveEvent",
+      "audio":"https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+      "audio_duration":1
+   }
+}
