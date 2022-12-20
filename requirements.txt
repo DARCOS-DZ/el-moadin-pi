@@ -5,3 +5,4 @@ django-picklefield==3.1
 mutagen==1.46.0
 paho-mqtt==1.6.1
 sqlparse==0.4.3
+wget==3.2
