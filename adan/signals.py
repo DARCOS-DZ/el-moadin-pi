@@ -16,12 +16,13 @@ def message_signal(sender, instance, **kwargs):
         with path.open(mode='rb') as f:
             instance.audio = File(f, name=path.name)
             instance.save()
-        import pygame
         absolute_path = str(settings.BASE_DIR) + instance.audio.url
+        import pygame
         pygame.mixer.init()
-        mixer.music.load(absolute_path)
-        mixer.music.set_volume(0.7)
-        mixer.music.play()
+        pygame.mixer.music.set_volume(0.7)
+        sound = pygame.mixer.Sound(absolute_path)
+        sound.play()
+        pygame.time.wait(int(sound.get_length() * 1000))
 
     except Exception as e:
         pass
