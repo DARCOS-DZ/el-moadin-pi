@@ -26,7 +26,7 @@
    "sender":0,
    "data":{
       "model":"PrayerAudio",
-      "audio":"test.test/test/test",
+      "audio":"http://commondatastorage.googleapis.com/codeskulptor-demos/pyman_assets/intromusic.ogg",
       "prayer":"duhr",
       "audio_duration":2
    }
