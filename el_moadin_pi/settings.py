@@ -142,3 +142,8 @@ CONSTANCE_CONFIG = {
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+
+
+# tasks settings
+
+# BACKGROUND_TASK_RUN_ASYNC = True
