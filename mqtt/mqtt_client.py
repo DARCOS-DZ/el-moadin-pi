@@ -4,7 +4,7 @@ from datetime import datetime
 # The callback for when the client receives a CONNACK response from the server.
 
 def on_connect(client, userdata, flags, rc):
-    # print("\n",datetime.now(), "  ", "Connected with result code "+str(rc) + "\n")
+    print("\n",datetime.now(), "  ", "Connected with result code "+str(rc) + "\n")
 
     # Subscribing in on_connect() means that if we lose the connection and
     # reconnect then subscriptions will be renewed.
@@ -42,7 +42,7 @@ def main():
     client = mqtt.Client(client_id='ahmed', clean_session=False)
     client.on_connect = on_connect
     client.on_message = on_message
-    client.connect_async("51.195.148.231", 1883, 60)
+    client.connect_async("142.44.163.144", 1883, 60)
     return client
 
 if __name__ == '__main__':
