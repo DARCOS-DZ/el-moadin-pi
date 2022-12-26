@@ -110,7 +110,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = "Africa/Algiers"
 
 USE_I18N = True
 
@@ -147,4 +147,5 @@ MEDIA_URL = '/media/'
 # tasks settings
 
 MAX_ATTEMPTS = 1
+MAX_RUN_TIME = 0
 # BACKGROUND_TASK_RUN_ASYNC = True
