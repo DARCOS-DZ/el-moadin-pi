@@ -146,4 +146,5 @@ MEDIA_URL = '/media/'
 
 # tasks settings
 
+MAX_ATTEMPTS = 1
 # BACKGROUND_TASK_RUN_ASYNC = True
