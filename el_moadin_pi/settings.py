@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "adan",
     'constance',
     'constance.backends.database',
+    'background_task',
 ]
 
 MIDDLEWARE = [
