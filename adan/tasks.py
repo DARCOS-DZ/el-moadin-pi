@@ -16,16 +16,26 @@ def live_event_task(id):
     pygame.time.wait(int(sound.get_length() * 1000))
 
 @background()
-def prayer_audio_task(id):
+def prayer_audio_task(prayer):
     # lookup user by id and send them a message
     import pygame
-    prayer_audio = PrayerAudio.objects.get(id=id)
+    prayer_audio = PrayerAudio.objects.filter(prayer=prayer).last()
     absolute_path = str(settings.BASE_DIR) + prayer_audio.audio.url
     pygame.mixer.init()
     pygame.mixer.music.set_volume(0.7)
     sound = pygame.mixer.Sound(absolute_path)
     sound.play()
     pygame.time.wait(int(sound.get_length() * 1000))
+    if prayer == "elfajer" :
+        config.elfajer_schedul = False
+    elif prayer == "duhr" :
+        config.duhr_schedul = False
+    elif prayer == "alasr" :
+        config.alasr_schedul = False
+    elif prayer == "almaghreb" :
+        config.almaghreb_schedul = False
+    elif prayer == "alaicha" :
+        config.alaicha_schedul = False
 
 @background(schedule=0)
 def prayer_event_task(id):
