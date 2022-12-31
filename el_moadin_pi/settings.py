@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 from pathlib import Path
 import os
+from el_moadin_pi.utils import getserial
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -31,6 +32,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'django_crontab',
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -132,11 +134,26 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
 
 CONSTANCE_ADDITIONAL_FIELDS = {
-    'json_field': ['django.forms.JSONField', {}]
+    'json_field': ['django.forms.JSONField', {}],
+    'integer_field': ['django.forms.IntegerField', {}],
+    'boolean_field': ['django.forms.BooleanField', {}]
 }
 
 CONSTANCE_CONFIG = {
     'PRAYER_SOURCE': ("{}", 'json_field'),
+    'PrayerTime': ({}, 'Prayer', 'json_field'),
+    'State': ("", 'Name'),
+    'elfajer': ("", 'Prayer hour'),
+    'elfajer_schedul': (False, 'Prayer hour', "boolean_field"),
+    'duhr': ("", 'Prayer hour'),
+    'duhr_schedul': (False, 'Prayer hour', "boolean_field"),
+    'alasr': ("", 'Prayer hour'),
+    'alasr_schedul': (False, 'Prayer hour', "boolean_field"),
+    'almaghreb': ("", 'Prayer hour'),
+    'almaghreb_schedul': (False, 'Prayer hour', "boolean_field"),
+    'alaicha': ("", 'Prayer hour'),
+    'alaicha_schedul': (False, 'Prayer hour', "boolean_field"),
+    'offset_time': (0, 'Offset Time', "integer_field"),
 }
 
 
@@ -149,3 +166,11 @@ MEDIA_URL = '/media/'
 MAX_ATTEMPTS = 1
 MAX_RUN_TIME = 0
 # BACKGROUND_TASK_RUN_ASYNC = True
+
+# CRONJOBS
+
+CRONJOBS = [
+    ('* * * * *', 'el_moadin_pi.cron.daily', '>> {}/cron.log'.format(BASE_DIR)),
+]
+
+SERIAL_NUMBER = getserial()
