@@ -136,7 +136,6 @@ CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
 CONSTANCE_ADDITIONAL_FIELDS = {
     'json_field': ['django.forms.JSONField', {}],
     'integer_field': ['django.forms.IntegerField', {}],
-    'boolean_field': ['django.forms.BooleanField', {}]
 }
 
 CONSTANCE_CONFIG = {
@@ -144,15 +143,15 @@ CONSTANCE_CONFIG = {
     'PrayerTime': ({}, 'Prayer', 'json_field'),
     'State': ("", 'Name'),
     'elfajer': ("", 'Prayer hour'),
-    'elfajer_schedul': (False, 'Prayer hour', "boolean_field"),
+    'elfajer_schedul': (False, 'Prayer hour'),
     'duhr': ("", 'Prayer hour'),
-    'duhr_schedul': (False, 'Prayer hour', "boolean_field"),
+    'duhr_schedul': (False, 'Prayer hour'),
     'alasr': ("", 'Prayer hour'),
-    'alasr_schedul': (False, 'Prayer hour', "boolean_field"),
+    'alasr_schedul': (False, 'Prayer hour'),
     'almaghreb': ("", 'Prayer hour'),
-    'almaghreb_schedul': (False, 'Prayer hour', "boolean_field"),
+    'almaghreb_schedul': (False, 'Prayer hour'),
     'alaicha': ("", 'Prayer hour'),
-    'alaicha_schedul': (False, 'Prayer hour', "boolean_field"),
+    'alaicha_schedul': (False, 'Prayer hour'),
     'offset_time': (0, 'Offset Time', "integer_field"),
 }
 
