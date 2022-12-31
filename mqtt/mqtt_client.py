@@ -2,6 +2,8 @@ import paho.mqtt.client as mqtt
 import json
 from datetime import datetime
 from django.conf import settings
+from constance import config
+
 # The callback for when the client receives a CONNACK response from the server.
 
 def on_connect(client, userdata, flags, rc):
@@ -43,7 +45,7 @@ def main():
     client = mqtt.Client(client_id=str(settings.SERIAL_NUMBER), clean_session=False)
     client.on_connect = on_connect
     client.on_message = on_message
-    client.connect_async("142.44.163.144", 1883, 60)
+    client.connect_async(config.broker_ip, 1883, 60)
     return client
 
 if __name__ == '__main__':

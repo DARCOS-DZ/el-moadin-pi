@@ -153,6 +153,7 @@ CONSTANCE_CONFIG = {
     'alaicha': ("", 'Prayer hour'),
     'alaicha_schedul': (False, 'Prayer hour'),
     'offset_time': (0, 'Offset Time', "integer_field"),
+    'broker_ip': ("142.44.163.144", 'Broker address'),
 }
 
 
