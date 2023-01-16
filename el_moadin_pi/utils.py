@@ -9,4 +9,5 @@ def getserial():
     if cpuserial == "0000000000000000" :
       import random
       cpuserial = random.randint(100000,90000000)
-    return cpuserial
+      # cpuserial = "0000000000000000"
+    return str(cpuserial)

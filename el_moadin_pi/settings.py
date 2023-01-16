@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    "mqtt",
     'django_crontab',
     "django.contrib.admin",
     "django.contrib.auth",
@@ -39,7 +40,6 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "mqtt",
     "adan",
     'constance',
     'constance.backends.database',
@@ -141,7 +141,7 @@ CONSTANCE_ADDITIONAL_FIELDS = {
 CONSTANCE_CONFIG = {
     'PRAYER_SOURCE': ("{}", 'json_field'),
     'PrayerTime': ({}, 'Prayer', 'json_field'),
-    'State': ("", 'Name'),
+    'mosque': ("Mosque name", 'Name'),
     'elfajer': ("", 'Prayer hour'),
     'elfajer_schedul': (False, 'Prayer hour'),
     'duhr': ("", 'Prayer hour'),
@@ -174,3 +174,5 @@ CRONJOBS = [
 ]
 
 SERIAL_NUMBER = getserial()
+# SERIAL_NUMBER = "69335335"
+SERIAL_NUMBER = "72113824"
