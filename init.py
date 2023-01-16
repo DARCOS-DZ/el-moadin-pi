@@ -65,6 +65,20 @@ def pm2_services():
     command = "pm2 start run_process_tasks.sh"
     subprocess.call(command, shell=True)
 
+def set_config(mosque, offset_time, broker_ip=None, home_assistant=None):
+    command = f'''source env/bin/activate ;
+    ./manage.py constance set mosque "{mosque}";
+    ./manage.py constance set offset_time {offset_time};
+    '''
+    subprocess.call(command, shell=True, executable='/bin/bash')
+    if broker_ip != None :
+        command = f'''source env/bin/activate ;
+        ./manage.py constance set broker_ip "{broker_ip}";
+        '''
+        subprocess.call(command, shell=True, executable='/bin/bash')
+    if home_assistant != None :
+        pass
+
 answer = None
 
 while answer not in ("y", "n"):
@@ -83,6 +97,7 @@ while answer not in ("y", "n"):
         pm2_installer()
         env_init()
         pm2_services()
+        set_config(mosque=mosque, offset_time=offset_time)
         break
     elif answer.lower() == "n":
         break
