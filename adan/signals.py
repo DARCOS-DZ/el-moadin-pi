@@ -8,6 +8,9 @@ from constance import config
 from django.core.files import File
 import wget
 from pathlib import Path
+import json
+from django.utils import timezone
+from .tasks import prayer_event_task
 
 @receiver(post_save, sender=LiveEvent)
 def live_event_signal(sender, instance, **kwargs):
@@ -41,6 +44,32 @@ def prayer_audio_signal(sender, instance, **kwargs):
     except Exception as e:
         pass
 
+@receiver(post_save, sender=PrayerEvent)
+def prayer_event_signal(sender, instance, **kwargs):
+    audio = str(instance.audio)
+    try:
+        download  = wget.download(audio, out="media")
+        downloaded_file = str(download).encode()
+        path = Path(downloaded_file.decode("utf-8"))
+        with path.open(mode='rb') as f:
+            instance.audio = File(f, name=path.name)
+            instance.save()
+        now = datetime.now()
+        prayer = datetime.strptime("{} {}".format(now.strftime("%Y,%m,%d"), getattr(config, instance.prayer)), "%Y,%m,%d %H:%M:%S")
+        delta = 10 + instance.audio_duration
+        if instance.type == "before":
+            schedule = prayer - timedelta(seconds=delta)
+        else :
+            schedule = prayer + timedelta(seconds=delta)
+        print(schedule)
+        prayer_event_task(id=instance.id,schedule=schedule)
+
+
+
+
+    except Exception as e:
+        pass
+
 @receiver(config_updated)
 def constance_updated(sender, key, old_value, new_value, **kwargs):
     print(sender, key, old_value, new_value)
@@ -56,8 +85,8 @@ def constance_updated(sender, key, old_value, new_value, **kwargs):
             chorouk=(datetime.strptime(prayer["chorouk"], '%H:%M %p')+timedelta(minutes=config.offset_time)).time()
             new_dictionary_item = {"id":prayer["id"],"date":prayer["date"],"elfajer":str(elfajer),"chorouk":str(chorouk),"duhr":str(duhr),"alasr":str(alasr),"almaghreb":str(almaghreb),"alaicha":str(alaicha)}
             new_dictionary["data"].append(new_dictionary_item)
-        prayers = get_todays_prayers()
         config.PrayerTime = new_dictionary
+        prayers = get_todays_prayers()
         config.elfajer = prayers["elfajer"]
         config.duhr = prayers["duhr"]
         config.alasr = prayers["alasr"]
