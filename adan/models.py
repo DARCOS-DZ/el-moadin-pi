@@ -28,14 +28,10 @@ class LiveEvent(models.Model):
 class PrayerEvent(models.Model):
     TYPE = (('after','after'),('before','before'))
     type = models.CharField(max_length=50,choices=TYPE)
-    repeated = models.BooleanField(default=True)
+    name = models.CharField(max_length=120,null=True)
     prayer = models.CharField(max_length=50,choices=PRAYER)
     audio = models.FileField(upload_to="prayer_event", max_length=250,null=True,blank=True)
     audio_duration = models.PositiveIntegerField(null=True,blank=True)
-    def save(self, *args, **kwargs):
-       if self.audio_duration is None or self.audio_duration == "":
-        audio_info = mutagen.File(self.audio).info
-        self.audio_duration=int(audio_info.length)
-       super(PrayerEvent, self).save(*args, **kwargs) # Call the real save() method
+    created_at = models.DateTimeField()
     def __str__(self):
         return f"{self.type}-{self.prayer}"
