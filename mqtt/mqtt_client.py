@@ -66,7 +66,7 @@ def main():
     client = mqtt.Client(client_id=str(settings.SERIAL_NUMBER), clean_session=False)
     client.on_connect = on_connect
     client.on_message = on_message
-    client.connect_async(config.broker_ip, port=1883, keepalive=60)
+    client.connect_async(config.broker_ip, port=1883, keepalive=0, bind_address="")
     return client
 
 if __name__ == '__main__':
