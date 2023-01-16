@@ -6,7 +6,6 @@ class MqttConfig(AppConfig):
     name = "mqtt"
     def ready(self):
         if os.environ.get('RUN_MAIN'):
-            from . import signals, mqtt_client
-            from django.core.management import call_command
+            from . import mqtt_client
             client = mqtt_client.main()
             client.loop_start()
