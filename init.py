@@ -60,9 +60,9 @@ def env_init():
     subprocess.call(command, shell=True)
 
 def pm2_services():
-    command = "pm2 start run_production.sh"
+    command = 'pm2 start run_production.sh --cron-restart="* * * * *" '
     subprocess.call(command, shell=True)
-    command = "pm2 start run_process_tasks.sh"
+    command = 'pm2 start run_process_tasks.sh --cron-restart="* * * * *"'
     subprocess.call(command, shell=True)
 
 def set_config(mosque, offset_time, broker_ip=None, home_assistant=None):
