@@ -4,7 +4,8 @@ from datetime import datetime
 from django.conf import settings
 from constance import config
 from django.utils import timezone
-
+import background
+import time
 # The callback for when the client receives a CONNACK response from the server.
 
 def on_connect(client, userdata, flags, rc):
@@ -29,6 +30,7 @@ def on_disconnect(client, userdata, rc):
     client.reconnect()
 
 # The callback for when a PUBLISH message is received from the server.
+
 def on_message(client, userdata, msg):
     try:
         brut_text = str(msg.payload.decode("utf-8"))
@@ -61,13 +63,15 @@ def on_message(client, userdata, msg):
     except Exception as e:
         print(e)
 
-
+# @background.task
 def main():
     client = mqtt.Client(client_id=str(settings.SERIAL_NUMBER), clean_session=False)
     client.on_connect = on_connect
     client.on_message = on_message
-    client.connect_async(config.broker_ip, port=1883, keepalive=0, bind_address="")
+    client.connect_async(config.broker_ip, port=1883)
+    client.loop_start()
     return client
+
 
 if __name__ == '__main__':
 	main()
