@@ -82,7 +82,7 @@ def set_config(mosque, offset_time, broker_ip=None, home_assistant=None):
 answer = None
 
 while answer not in ("y", "n"):
-    answer = input(bcolors.BOLD + bcolors.WHITE + "Do you have these informations y/n : " + bcolors.ENDC)
+    answer = input(bcolors.BOLD + bcolors.WHITE + "Do you have these informations [y/n] : " + bcolors.ENDC)
     if answer.lower() == "y":
 
         print("\n" + bcolors.BOLD + bcolors.CYAN + "Please answer to the following questions to init your Raspberry pi" + bcolors.ENDC)
