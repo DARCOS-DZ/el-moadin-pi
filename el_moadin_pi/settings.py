@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 from pathlib import Path
 import os
-from el_moadin_pi.utils import getserial
+from el_moadin_pi.utils import getserial, prayer_source
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -32,8 +32,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    "mqtt",
     'django_crontab',
+    "mqtt",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -138,9 +138,11 @@ CONSTANCE_ADDITIONAL_FIELDS = {
     'integer_field': ['django.forms.IntegerField', {}],
 }
 
+PRAYER_SOURCE = str(prayer_source)
+
 CONSTANCE_CONFIG = {
-    'PRAYER_SOURCE': ("{}", 'json_field'),
-    'PrayerTime': ({}, 'Prayer', 'json_field'),
+    'PRAYER_SOURCE': (f"{PRAYER_SOURCE}",'Prayer source', 'json_field'),
+    'PrayerTime': (f"{PRAYER_SOURCE}", 'Prayer', 'json_field'),
     'mosque': ("Mosque name", 'Name'),
     'elfajer': ("", 'Prayer hour'),
     'elfajer_schedul': (False, 'Prayer hour'),
@@ -156,6 +158,15 @@ CONSTANCE_CONFIG = {
     'broker_ip': ("142.44.163.144", 'Broker address'),
 }
 
+CONSTANCE_CONFIG_FIELDSETS = {
+    'Prayer source Options': {
+        'fields': ('PRAYER_SOURCE', 'PrayerTime'),
+        'collapse': True
+    },
+    'Prayers ': ('elfajer','elfajer_schedul','duhr','duhr_schedul','alasr','alasr_schedul','almaghreb','almaghreb_schedul','alaicha','alaicha_schedul',),
+    'Offset time config ': ('offset_time',) ,
+    'Device settings': ('broker_ip', "mosque") ,
+}
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
