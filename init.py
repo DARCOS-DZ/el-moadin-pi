@@ -60,9 +60,9 @@ def env_init():
     subprocess.call(command, shell=True)
 
 def pm2_services():
-    command = 'pm2 start run_production.sh --cron-restart="* * * * *" '
+    command = 'pm2 start run_production.sh'
     subprocess.call(command, shell=True)
-    command = 'pm2 start run_process_tasks.sh --cron-restart="* * * * *"'
+    command = 'pm2 start run_process_tasks.sh'
     subprocess.call(command, shell=True)
 
 def set_config(mosque, offset_time, broker_ip=None, home_assistant=None):
@@ -77,7 +77,31 @@ def set_config(mosque, offset_time, broker_ip=None, home_assistant=None):
         '''
         subprocess.call(command, shell=True, executable='/bin/bash')
     if home_assistant != None :
-        pass
+        command = 'pm2 startup'
+        subprocess.call(command, shell=True, executable='/bin/bash')
+
+def pm2_startup_conf():
+    process = subprocess.Popen(
+        "pm2 startup",
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        shell=True,
+        encoding='utf-8',
+        errors='replace',
+    )
+    while True:
+        realtime_output = process.stdout.readline()
+        print(realtime_output)
+        if realtime_output == '' and process.poll() is not None:
+            break
+        if realtime_output:
+            output = realtime_output.strip()
+            if "sudo" in output :
+                command = output
+                subprocess.call(command, shell=True, executable='/bin/bash')
+                subprocess.call("pm2 save", shell=True, executable='/bin/bash')
+                break
+
 
 answer = None
 
@@ -98,6 +122,7 @@ while answer not in ("y", "n"):
         env_init()
         pm2_services()
         set_config(mosque=mosque, offset_time=offset_time)
+        pm2_startup_conf()
         break
     elif answer.lower() == "n":
         break
