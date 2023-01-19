@@ -2,15 +2,10 @@ import subprocess
 import time
 
 class bcolors:
-    HEADER = '\033[95m'
-    OKBLUE = '\033[94m'
-    OKCMAGENTA = '\033[1;35m'
     OKGREEN = '\033[1;32m'
-    WARNING = '\033[1;33m'
     FAIL = '\033[1;31m'
     ENDC = '\033[0m'
     BOLD = '\033[1m'
-    UNDERLINE = '\033[4m'
     CYAN = '\033[1;36m'
     WHITE = '\033[1;37m'
 
@@ -29,9 +24,9 @@ Before you start make sure you have this informations :
 
 - Mosque name
 - The offset time of the mosque
-- Mqtt broker ip address
-- Local HomeAssistant ip address
-"""
+""" # + - Mqtt broker ip address
+# - Local HomeAssistant ip address
+# """
 
 print(bcolors.BOLD + bcolors.CYAN  + logo + bcolors.ENDC)
 time.sleep(1)
@@ -65,20 +60,20 @@ def pm2_services():
     command = 'pm2 start run_process_tasks.sh'
     subprocess.call(command, shell=True)
 
-def set_config(mosque, offset_time, broker_ip=None, home_assistant=None):
+def set_config(mosque, offset_time):  #, broker_ip=None, home_assistant=None):
     command = f'''source env/bin/activate ;
     ./manage.py constance set mosque "{mosque}";
     ./manage.py constance set offset_time {offset_time};
     '''
     subprocess.call(command, shell=True, executable='/bin/bash')
-    if broker_ip != None :
-        command = f'''source env/bin/activate ;
-        ./manage.py constance set broker_ip "{broker_ip}";
-        '''
-        subprocess.call(command, shell=True, executable='/bin/bash')
-    if home_assistant != None :
-        command = 'pm2 startup'
-        subprocess.call(command, shell=True, executable='/bin/bash')
+    # if broker_ip != None :
+    #     command = f'''source env/bin/activate ;
+    #     ./manage.py constance set broker_ip "{broker_ip}";
+    #     '''
+    #     subprocess.call(command, shell=True, executable='/bin/bash')
+    # if home_assistant != None :
+    #     command = 'pm2 startup'
+    #     subprocess.call(command, shell=True, executable='/bin/bash')
 
 def pm2_startup_conf():
     process = subprocess.Popen(
@@ -102,6 +97,9 @@ def pm2_startup_conf():
                 subprocess.call("pm2 save", shell=True, executable='/bin/bash')
                 break
 
+def migrate():
+    command = "source env/bin/activate ; ./manage.py migrate"
+    subprocess.call(command, shell=True, executable='/bin/bash')
 
 answer = None
 
@@ -110,20 +108,59 @@ while answer not in ("y", "n"):
     if answer.lower() == "y":
 
         print("\n" + bcolors.BOLD + bcolors.CYAN + "Please answer to the following questions to init your Raspberry pi" + bcolors.ENDC)
-
         mosque = input(bcolors.BOLD + bcolors.WHITE + "\nwhat is the name of this mosque ? : " + bcolors.ENDC)
-        offset_time = input(bcolors.BOLD + bcolors.WHITE + "\nwhat is the offset time of this mosque ? : "+ bcolors.ENDC)
-        broker_ip = input(bcolors.BOLD + bcolors.WHITE + "\nwhat is the broker address ? : " + bcolors.ENDC)
-        home_assistant = input(bcolors.BOLD + bcolors.WHITE + "\nwhat is the HomeAssistant address ? : " + bcolors.ENDC)
+        offset_time = int(input(bcolors.BOLD + bcolors.WHITE + "\nwhat is the offset time of this mosque ? : "+ bcolors.ENDC))
+        # broker_ip = input(bcolors.BOLD + bcolors.WHITE + "\nwhat is the broker address ? : " + bcolors.ENDC)
+        # home_assistant = input(bcolors.BOLD + bcolors.WHITE + "\nwhat is the HomeAssistant address ? : " + bcolors.ENDC)
 
-        print("\n" + bcolors.BOLD + bcolors.CYAN + "We will install the os dependencies, enter your sudo password" + bcolors.ENDC)
-        os_installer(dependencies=os_dependencies)
-        pm2_installer()
-        env_init()
-        pm2_services()
-        set_config(mosque=mosque, offset_time=offset_time)
-        pm2_startup_conf()
-        break
+        try:
+            print("\n" + bcolors.BOLD + bcolors.CYAN + "We will install the os dependencies, enter your sudo password" + bcolors.ENDC)
+            os_installer(dependencies=os_dependencies)
+        except Exception as e:
+            print("\n" + bcolors.BOLD + bcolors.FAIL + "Dependencies error" + bcolors.ENDC + "\n")
+            break
+        try:
+            pm2_installer()
+        except Exception as e:
+            print("\n" + bcolors.BOLD + bcolors.FAIL + "PM2 Installation error" + bcolors.ENDC + "\n")
+            break
+        try:
+            print("\n" + bcolors.BOLD + bcolors.CYAN + "Creating virtual environement & installing pip dependencies ..." + bcolors.ENDC)
+            env_init()
+            print("\n" +bcolors.BOLD + bcolors.OKGREEN + "Virtual environement & installing pip dependencies are installed successfully" + bcolors.ENDC + "\n")
+        except Exception as e:
+            print("\n" + bcolors.BOLD + bcolors.FAIL + "Virtual environement Installation error" + bcolors.ENDC + "\n")
+            break
+        try:
+            print("\n" + bcolors.BOLD + bcolors.CYAN + "Migrating the database ..." + bcolors.ENDC)
+            migrate()
+            print("\n" +bcolors.BOLD + bcolors.OKGREEN + "Database migrated successfully" + bcolors.ENDC + "\n")
+        except Exception as e:
+            print("\n" + bcolors.BOLD + bcolors.FAIL + "Database migration error" + bcolors.ENDC + "\n")
+            break
+        try:
+            print("\n" + bcolors.BOLD + bcolors.CYAN + "Starting pm2 jobs ..." + bcolors.ENDC)
+            pm2_services()
+            print("\n" +bcolors.BOLD + bcolors.OKGREEN + "pm2 jobs started successfully" + bcolors.ENDC + "\n")
+        except Exception as e:
+            print("\n" + bcolors.BOLD + bcolors.FAIL + "pm2 jobs error" + bcolors.ENDC + "\n")
+            break
+        try:
+            print("\n" + bcolors.BOLD + bcolors.CYAN + "Updating the settings ..." + bcolors.ENDC)
+            set_config(mosque=mosque, offset_time=offset_time)
+            print("\n" +bcolors.BOLD + bcolors.OKGREEN + "Settings updated successfully" + bcolors.ENDC + "\n")
+        except Exception as e:
+            print("\n" + bcolors.BOLD + bcolors.FAIL + "Updating settings error" + bcolors.ENDC + "\n")
+            break
+        try:
+            print("\n" + bcolors.BOLD + bcolors.CYAN + "Creating pm2 startup conf ..." + bcolors.ENDC)
+            pm2_startup_conf()
+            print("\n" +bcolors.BOLD + bcolors.OKGREEN + "Startup configuration is done" + bcolors.ENDC + "\n")
+            break
+        except Exception as e:
+            print("\n" + bcolors.BOLD + bcolors.FAIL + "Startup configuration error" + bcolors.ENDC + "\n")
+            break
+
     elif answer.lower() == "n":
         break
     else:
