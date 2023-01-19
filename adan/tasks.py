@@ -31,20 +31,41 @@ def live_event_task(id):
 def prayer_audio_task(prayer):
     # lookup user by id and send them a message
     import pygame
-    prayer_audio = PrayerAudio.objects.filter(prayer=prayer).last()
-    absolute_path = str(settings.BASE_DIR) + prayer_audio.audio.url
-    pygame.mixer.init()
-    pygame.mixer.music.set_volume(0.7)
-    sound = pygame.mixer.Sound(absolute_path)
-    sound.play()
-    pygame.time.wait(int(sound.get_length() * 1000))
-    if prayer == "elfajer" :
-        config.elfajer_schedul = False
-    elif prayer == "duhr" :
-        config.duhr_schedul = False
-    elif prayer == "alasr" :
-        config.alasr_schedul = False
-    elif prayer == "almaghreb" :
-        config.almaghreb_schedul = False
-    elif prayer == "alaicha" :
-        config.alaicha_schedul = False
+    try:
+        prayer_audio = PrayerAudio.objects.filter(prayer=prayer).last()
+        absolute_path = str(settings.BASE_DIR) + prayer_audio.audio.url
+        pygame.mixer.init()
+        pygame.mixer.music.set_volume(0.7)
+        sound = pygame.mixer.Sound(absolute_path)
+        sound.play()
+        pygame.time.wait(int(sound.get_length() * 1000))
+        if prayer == "elfajer" :
+            config.elfajer_schedul = False
+        elif prayer == "duhr" :
+            config.duhr_schedul = False
+        elif prayer == "alasr" :
+            config.alasr_schedul = False
+        elif prayer == "almaghreb" :
+            config.almaghreb_schedul = False
+        elif prayer == "alaicha" :
+            config.alaicha_schedul = False
+    except:
+        if prayer == "elfajer" :
+            absolute_path = str(settings.BASE_DIR) + "/audio/audio_azan.mp3"
+        else :
+            absolute_path = str(settings.BASE_DIR) + "/audio/audio_azansubuh.mp3"
+        pygame.mixer.init()
+        pygame.mixer.music.set_volume(0.7)
+        sound = pygame.mixer.Sound(absolute_path)
+        sound.play()
+        pygame.time.wait(int(sound.get_length() * 1000))
+        if prayer == "elfajer" :
+            config.elfajer_schedul = False
+        elif prayer == "duhr" :
+            config.duhr_schedul = False
+        elif prayer == "alasr" :
+            config.alasr_schedul = False
+        elif prayer == "almaghreb" :
+            config.almaghreb_schedul = False
+        elif prayer == "alaicha" :
+            config.alaicha_schedul = False
