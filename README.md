@@ -70,8 +70,8 @@ what is the name of this mosque ? : Mosque name
 
 what is the offset time of this mosque ? : 1
 ```
-Put the required information the script will automatically install OS dependencies, create virtual environment, install python dependencies, set the mosque name, set the offset time, migrate the database, start pm2 process, set pm2 startup settings for auto start when the raspberry pie is rebooted.
+Put the required information and the script will automatically install OS dependencies, create virtual environment, install python dependencies, set the mosque name, set the offset time, migrate the database, start pm2 process, set pm2 startup settings for auto start when the raspberry pie is rebooted.
 
 ## License
 
-[![MIT License](https://img.shields.io/badge/MIT-Licence-green.svg)](https://choosealicense.com/licenses/mit/) 
+[![MIT License](https://img.shields.io/badge/MIT-Licence-green.svg)](https://choosealicense.com/licenses/mit/)
