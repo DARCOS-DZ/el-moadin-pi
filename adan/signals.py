@@ -74,15 +74,20 @@ def prayer_event_signal(sender, instance, **kwargs):
 def constance_updated(sender, key, old_value, new_value, **kwargs):
     print(sender, key, old_value, new_value)
     if key == "offset_time":
-        prayer_source=json.loads(config.PRAYER_SOURCE)["data"]
+        try:
+            prayer_source = config.PRAYER_SOURCE.replace("'", '"')
+            prayer_source=json.loads(prayer_source)["data"]
+        except Exception as e:
+            prayer_source=config.PRAYER_SOURCE["data"]
+
         new_dictionary = {"data":[]}
         for prayer in prayer_source :
-            elfajer=(datetime.strptime(prayer["elfajer"], '%H:%M %p')+timedelta(minutes=config.offset_time)).time()
-            duhr=(datetime.strptime(prayer["duhr"], '%H:%M %p')+timedelta(minutes=config.offset_time)).time()
-            alasr=(datetime.strptime(prayer["alasr"], '%H:%M %p')+timedelta(minutes=config.offset_time)).time()
-            almaghreb=(datetime.strptime(prayer["almaghreb"], '%H:%M %p')+timedelta(minutes=config.offset_time)).time()
-            alaicha=(datetime.strptime(prayer["alaicha"], '%H:%M %p')+timedelta(minutes=config.offset_time)).time()
-            chorouk=(datetime.strptime(prayer["chorouk"], '%H:%M %p')+timedelta(minutes=config.offset_time)).time()
+            elfajer=(datetime.strptime(prayer["elfajer"], '%H:%M')+timedelta(minutes=config.offset_time)).time()
+            duhr=(datetime.strptime(prayer["duhr"], '%H:%M')+timedelta(minutes=config.offset_time)).time()
+            alasr=(datetime.strptime(prayer["alasr"], '%H:%M')+timedelta(minutes=config.offset_time)).time()
+            almaghreb=(datetime.strptime(prayer["almaghreb"], '%H:%M')+timedelta(minutes=config.offset_time)).time()
+            alaicha=(datetime.strptime(prayer["alaicha"], '%H:%M')+timedelta(minutes=config.offset_time)).time()
+            chorouk=(datetime.strptime(prayer["chorouk"], '%H:%M')+timedelta(minutes=config.offset_time)).time()
             new_dictionary_item = {"id":prayer["id"],"date":prayer["date"],"elfajer":str(elfajer),"chorouk":str(chorouk),"duhr":str(duhr),"alasr":str(alasr),"almaghreb":str(almaghreb),"alaicha":str(alaicha)}
             new_dictionary["data"].append(new_dictionary_item)
         config.PrayerTime = new_dictionary
