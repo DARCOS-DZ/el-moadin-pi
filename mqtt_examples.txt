@@ -6,7 +6,7 @@
 		"type": "after",
 		"repeated": true,
 		"prayer": "elfajer",
-		"audio": "test.test/test/test",
+		"audio": "http://commondatastorage.googleapis.com/codeskulptor-demos/pyman_assets/intromusic.ogg",
 		"audio_duration": 1
 	}
 }
@@ -38,7 +38,16 @@
    "sender":0,
    "data":{
       "model":"LiveEvent",
-      "audio":"https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+      "audio":"http://commondatastorage.googleapis.com/codeskulptor-demos/pyman_assets/intromusic.ogg",
       "audio_duration":1
+   }
+}
+
+{
+   "operation":"transfer",
+   "sender":0,
+   "data":{
+      "model":"Plug",
+      "state":"on"
    }
 }
