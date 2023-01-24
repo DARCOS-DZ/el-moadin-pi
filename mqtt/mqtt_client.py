@@ -35,6 +35,7 @@ def on_connect(client, userdata, flags, rc):
         "date": str(datetime.now()),
 	    }
     }
+    message = json.dumps(json_msg,ensure_ascii=False)
     client.publish(topic, message, qos=1)
     print(json_msg)
 
