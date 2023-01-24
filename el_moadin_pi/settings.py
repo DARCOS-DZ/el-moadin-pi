@@ -156,6 +156,9 @@ CONSTANCE_CONFIG = {
     'alaicha_schedul': (False, 'Prayer hour'),
     'offset_time': (0, 'Offset Time', "integer_field"),
     'broker_ip': ("142.44.163.144", 'Broker address'),
+    'home_assistant_address': ("http://100.109.24.49:8123", 'Home assistant address'),
+    'home_assistant_token': ("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiIyZDg5NWQ1YjFlMzM0NTM0OTA3MTc1Y2I1Njc3Yjc3MCIsImlhdCI6MTY3NDQ4MDE1OCwiZXhwIjoxOTg5ODQwMTU4fQ.aIIt-N9wtMfUTw9petvp0Ve84VsFBZ72RPweQjX9XBw", 'Home assistant API Token'),
+    'entity_id': ("switch.plug_zigbee2_switch", 'Entity ID'),
 }
 
 CONSTANCE_CONFIG_FIELDSETS = {
@@ -165,7 +168,8 @@ CONSTANCE_CONFIG_FIELDSETS = {
     },
     'Prayers ': ('elfajer','elfajer_schedul','duhr','duhr_schedul','alasr','alasr_schedul','almaghreb','almaghreb_schedul','alaicha','alaicha_schedul',),
     'Offset time config ': ('offset_time',) ,
-    'Device settings': ('broker_ip', "mosque") ,
+    'Device settings': ('broker_ip', "mosque"),
+    'Home Assistant settings': ('home_assistant_address', "home_assistant_token", 'entity_id'),
 }
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
