@@ -6,7 +6,7 @@ from constance import config
 from django.utils import timezone
 import background
 import time
-from adan.utils import get_zigbee_state
+from adan.utils import get_zigbee_state, zigbee_switch
 # The callback for when the client receives a CONNACK response from the server.
 
 def on_connect(client, userdata, flags, rc):
@@ -70,6 +70,10 @@ def on_message(client, userdata, msg):
                 if json_msg["data"]["model"] == "constance":
                     config.offset_time = json_msg["data"]["offset_time"]
                     print("Done")
+                if json_msg["data"]["model"] == "Plug":
+                    state = json_msg["data"]["state"]
+                    zigbee_switch(state)
+                    print(f"Plug switched to {state}")
         else :
           pass
     except Exception as e:
