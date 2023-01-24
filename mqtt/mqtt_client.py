@@ -75,6 +75,18 @@ def on_message(client, userdata, msg):
                     state = json_msg["data"]["state"]
                     zigbee_switch(state)
                     print(f"Plug switched to {state}")
+                    json_msg={
+                	"operation": "transfer",
+                	"sender": 1,
+                	"data": {
+                        "model": "Plug",
+                		"state": get_zigbee_state(),
+                        "date": str(datetime.now()),
+                	    }
+                    }
+                    message = json.dumps(json_msg,ensure_ascii=False)
+                    client.publish(topic, message, qos=1)
+                    print(json_msg)
         else :
           pass
     except Exception as e:
