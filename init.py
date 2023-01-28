@@ -24,6 +24,9 @@ Before you start make sure you have this informations :
 
 - Mosque name
 - The offset time of the mosque
+- The home assistant address
+- The home assistant token
+- The home assistant entity_id of the switch
 """ # + - Mqtt broker ip address
 # - Local HomeAssistant ip address
 # """
