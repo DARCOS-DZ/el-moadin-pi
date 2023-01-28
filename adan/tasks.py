@@ -2,6 +2,7 @@ from background_task import background
 from django.conf import settings
 from .models import *
 from constance import config
+from .utils import get_zigbee_state , zigbee_switch
 
 @background(schedule=0)
 def prayer_event_task(id):
@@ -32,6 +33,12 @@ def prayer_audio_task(prayer):
     # lookup user by id and send them a message
     import pygame
     try:
+        try:
+            state = get_zigbee_state()
+            if state == "off" :
+                url = f"{config.home_assistant_address}/api/services/switch/turn_on"
+        except:
+            pass
         prayer_audio = PrayerAudio.objects.filter(prayer=prayer).last()
         absolute_path = str(settings.BASE_DIR) + prayer_audio.audio.url
         pygame.mixer.init()
