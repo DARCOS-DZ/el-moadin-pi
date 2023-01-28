@@ -60,10 +60,15 @@ def pm2_services():
     command = 'pm2 start run_process_tasks.sh'
     subprocess.call(command, shell=True)
 
-def set_config(mosque, offset_time):  #, broker_ip=None, home_assistant=None):
+home_assistant_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiIyZDg5NWQ1YjFlMzM0NTM0OTA3MTc1Y2I1Njc3Yjc3MCIsImlhdCI6MTY3NDQ4MDE1OCwiZXhwIjoxOTg5ODQwMTU4fQ.aIIt-N9wtMfUTw9petvp0Ve84VsFBZ72RPweQjX9XBw"
+# set the default address
+def set_config(mosque, offset_time, home_assistant_address="http://localhost:8123", home_assistant_token=home_assistant_token, entity_id="switch.plug_zigbee2_switch"):  #, broker_ip=None, home_assistant=None):
     command = f'''source env/bin/activate ;
     ./manage.py constance set mosque "{mosque}";
     ./manage.py constance set offset_time {offset_time};
+    ./manage.py constance set home_assistant_address {home_assistant_address};
+    ./manage.py constance set home_assistant_token {home_assistant_token};
+    ./manage.py constance set entity_id {entity_id};
     '''
     subprocess.call(command, shell=True, executable='/bin/bash')
     # if broker_ip != None :
@@ -110,6 +115,9 @@ while answer not in ("y", "n"):
         print("\n" + bcolors.BOLD + bcolors.CYAN + "Please answer to the following questions to init your Raspberry pi" + bcolors.ENDC)
         mosque = input(bcolors.BOLD + bcolors.WHITE + "\nwhat is the name of this mosque ? : " + bcolors.ENDC)
         offset_time = int(input(bcolors.BOLD + bcolors.WHITE + "\nwhat is the offset time of this mosque ? : "+ bcolors.ENDC))
+        home_assistant_address = input(bcolors.BOLD + bcolors.WHITE + "\nwhat is the homeassistant address of this mosque ? : "+ bcolors.ENDC)
+        home_assistant_token = input(bcolors.BOLD + bcolors.WHITE + "\nwhat is the home assistant token of this mosque ? : "+ bcolors.ENDC)
+        entity_id = input(bcolors.BOLD + bcolors.WHITE + "\nwhat is the entity id of the switch of this mosque ? : "+ bcolors.ENDC)
         # broker_ip = input(bcolors.BOLD + bcolors.WHITE + "\nwhat is the broker address ? : " + bcolors.ENDC)
         # home_assistant = input(bcolors.BOLD + bcolors.WHITE + "\nwhat is the HomeAssistant address ? : " + bcolors.ENDC)
 
@@ -147,7 +155,7 @@ while answer not in ("y", "n"):
             break
         try:
             print("\n" + bcolors.BOLD + bcolors.CYAN + "Updating the settings ..." + bcolors.ENDC)
-            set_config(mosque=mosque, offset_time=offset_time)
+            set_config(mosque=mosque, offset_time=offset_time, home_assistant_address=home_assistant_address, home_assistant_token=home_assistant_token, entity_id=entity_id)
             print("\n" +bcolors.BOLD + bcolors.OKGREEN + "Settings updated successfully" + bcolors.ENDC + "\n")
         except Exception as e:
             print("\n" + bcolors.BOLD + bcolors.FAIL + "Updating settings error" + bcolors.ENDC + "\n")

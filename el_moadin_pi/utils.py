@@ -22,7 +22,7 @@ def background_loop():
     pass
     while True:
         client = mqtt_client.main()
-        time.sleep(41)
+        time.sleep(10)
         client.disconnect()
         client.loop_stop()
 
