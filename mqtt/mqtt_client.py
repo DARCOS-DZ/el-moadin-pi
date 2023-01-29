@@ -24,20 +24,24 @@ def on_connect(client, userdata, flags, rc):
 		"mosque_name": config.mosque,
 	    }
     }
-    message = json.dumps(json_msg,ensure_ascii=False)
-    client.publish(topic, message, qos=1)
-    json_msg={
-	"operation": "transfer",
-	"sender": 1,
-	"data": {
-        "model": "Plug",
-		"state": get_zigbee_state(),
-        "date": str(datetime.now()),
-	    }
-    }
-    message = json.dumps(json_msg,ensure_ascii=False)
-    client.publish(topic, message, qos=1)
-    print(json_msg)
+    try:
+        message = json.dumps(json_msg,ensure_ascii=False)
+        client.publish(topic, message, qos=1)
+        json_msg={
+    	"operation": "transfer",
+    	"sender": 1,
+    	"data": {
+            "model": "Plug",
+    		"state": get_zigbee_state(),
+            "date": str(datetime.now()),
+    	    }
+        }
+        message = json.dumps(json_msg,ensure_ascii=False)
+        client.publish(topic, message, qos=1)
+        print(json_msg)
+    except :
+        pass
+
 
 def on_disconnect(client, userdata, rc):
     client.reconnect()
