@@ -23,7 +23,7 @@ def live_event_signal(sender, instance, **kwargs):
         with path.open(mode='rb') as f:
             instance.audio = File(f, name=path.name)
             instance.save()
-        live_event_task(id=instance.id,schedule=datetime.now() )
+            live_event_task(id=instance.id,schedule=datetime.now() )
 
     except Exception as e:
         pass
