@@ -19,14 +19,13 @@ def live_event_signal(sender, instance, **kwargs):
         from .tasks import live_event_task
         download  = wget.download(audio, out="media")
         downloaded_file = str(download).encode()
-        path = Path(downloaded_file.decode("utf-8"))
+        path = Path(downloaded_file)
         with path.open(mode='rb') as f:
             instance.audio = File(f, name=path.name)
             instance.save()
-            live_event_task(id=instance.id,schedule=datetime.now() )
-
+        live_event_task(id=instance.id,schedule=datetime.now())
     except Exception as e:
-        pass
+        print(e)
 
 @receiver(post_save, sender=PrayerAudio)
 def prayer_audio_signal(sender, instance, **kwargs):
