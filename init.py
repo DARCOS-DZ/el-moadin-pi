@@ -45,6 +45,8 @@ def os_installer(dependencies):
         subprocess.call(command, shell=True)
         print("\n" +bcolors.BOLD + bcolors.OKGREEN + f"{app} installed successfully" + bcolors.ENDC + "\n")
         time.sleep(1)
+    command = "mkdir media ; mkdir media/prayer_event ; mkdir media/prayer_audio ; mkdir media/live_event ;".format(str(app))
+    subprocess.call(command, shell=True)
 
 def pm2_installer():
     print("\n" +bcolors.BOLD + bcolors.CYAN + "Installing PM2 ..." + bcolors.ENDC + "\n")
