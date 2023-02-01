@@ -12,8 +12,11 @@ import json
 from django.utils import timezone
 from .tasks import prayer_event_task, live_event_task
 import os
+from django.utils import timezone
 
-def downloader(instance, model=""):
+current_tz = timezone.get_current_timezone()
+
+def downloader(instance, model="",current_tz=current_tz):
     if instance.downloaded == False :
         audio = str(instance.audio)
         download  = wget.download(audio, out="media")
@@ -25,10 +28,10 @@ def downloader(instance, model=""):
             instance.save()
         os.remove(path)
         if model=="LiveEvent":
-            live_event_task(id=instance.id,schedule=datetime.now())
+            live_event_task(id=instance.id,schedule=datetime.now(current_tz))
         if model=="PrayerEvent":
-            now = datetime.now()
-            prayer = datetime.strptime("{} {}".format(now.strftime("%Y,%m,%d"), getattr(config, instance.prayer)), "%Y,%m,%d %H:%M:%S")
+            now = datetime.now(current_tz)
+            prayer = datetime.strptime("{} {}".format(now.strftime("%Y,%m,%d"), getattr(config, instance.prayer)), "%Y,%m,%d %H:%M:%S", tzinfo=current_tz)
             delta = 10 + instance.audio_duration
             if instance.type == "before":
                 schedule = prayer - timedelta(seconds=delta)
@@ -54,6 +57,7 @@ def prayer_event_signal(sender, instance, **kwargs):
 @receiver(config_updated)
 def constance_updated(sender, key, old_value, new_value, **kwargs):
     print(sender, key, old_value, new_value)
+    current_tz = timezone.get_current_timezone()
     if key == "offset_time":
         try:
             prayer_source = config.PRAYER_SOURCE.replace("'", '"')
@@ -63,12 +67,12 @@ def constance_updated(sender, key, old_value, new_value, **kwargs):
 
         new_dictionary = {"data":[]}
         for prayer in prayer_source :
-            elfajer=(datetime.strptime(prayer["elfajer"], '%H:%M')+timedelta(minutes=config.offset_time)).time()
-            duhr=(datetime.strptime(prayer["duhr"], '%H:%M')+timedelta(minutes=config.offset_time)).time()
-            alasr=(datetime.strptime(prayer["alasr"], '%H:%M')+timedelta(minutes=config.offset_time)).time()
-            almaghreb=(datetime.strptime(prayer["almaghreb"], '%H:%M')+timedelta(minutes=config.offset_time)).time()
-            alaicha=(datetime.strptime(prayer["alaicha"], '%H:%M')+timedelta(minutes=config.offset_time)).time()
-            chorouk=(datetime.strptime(prayer["chorouk"], '%H:%M')+timedelta(minutes=config.offset_time)).time()
+            elfajer=(datetime.strptime(prayer["elfajer"], '%H:%M', tzinfo=current_tz)+timedelta(minutes=config.offset_time)).time()
+            duhr=(datetime.strptime(prayer["duhr"], '%H:%M', tzinfo=current_tz)+timedelta(minutes=config.offset_time)).time()
+            alasr=(datetime.strptime(prayer["alasr"], '%H:%M', tzinfo=current_tz)+timedelta(minutes=config.offset_time)).time()
+            almaghreb=(datetime.strptime(prayer["almaghreb"], '%H:%M', tzinfo=current_tz)+timedelta(minutes=config.offset_time)).time()
+            alaicha=(datetime.strptime(prayer["alaicha"], '%H:%M', tzinfo=current_tz)+timedelta(minutes=config.offset_time)).time()
+            chorouk=(datetime.strptime(prayer["chorouk"], '%H:%M', tzinfo=current_tz)+timedelta(minutes=config.offset_time)).time()
             new_dictionary_item = {"id":prayer["id"],"date":prayer["date"],"elfajer":str(elfajer),"chorouk":str(chorouk),"duhr":str(duhr),"alasr":str(alasr),"almaghreb":str(almaghreb),"alaicha":str(alaicha)}
             new_dictionary["data"].append(new_dictionary_item)
         config.PrayerTime = new_dictionary

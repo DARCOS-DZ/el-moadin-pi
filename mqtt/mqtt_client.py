@@ -103,3 +103,6 @@ def background_loop():
             client.disconnect()
             client.loop_stop()
     check()
+
+if __name__ == '__main__':
+    background_loop()

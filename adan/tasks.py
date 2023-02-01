@@ -58,9 +58,9 @@ def prayer_audio_task(prayer):
             config.alaicha_schedul = False
     except:
         if prayer == "elfajer" :
-            absolute_path = str(settings.BASE_DIR) + "/audio/audio_azan.mp3"
-        else :
             absolute_path = str(settings.BASE_DIR) + "/audio/audio_azansubuh.mp3"
+        else :
+            absolute_path = str(settings.BASE_DIR) + "/audio/audio_azan.mp3"
         pygame.mixer.init()
         pygame.mixer.music.set_volume(0.7)
         sound = pygame.mixer.Sound(absolute_path)
