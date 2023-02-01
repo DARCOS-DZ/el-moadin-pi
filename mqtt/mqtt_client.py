@@ -85,6 +85,7 @@ def background_loop():
                         "date": str(datetime.now()),
                 	    }
                     }
+                    topic = "raspberry_pi/{}".format(settings.SERIAL_NUMBER)
                     message = json.dumps(json_msg,ensure_ascii=False)
                     client.publish(topic, message, qos=1)
                     print(json_msg)
