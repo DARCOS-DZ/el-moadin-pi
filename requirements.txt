@@ -3,7 +3,6 @@ background==0.2.1
 certifi==2022.12.7
 charset-normalizer==3.0.1
 Django==4.1.4
-django-background-tasks==1.2.5
 django-compat==1.0.15
 django-constance==2.9.1
 django-crontab==0.7.1
