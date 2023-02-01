@@ -36,12 +36,12 @@ time.sleep(1)
 print(bcolors.BOLD + bcolors.CYAN + message + bcolors.ENDC)
 
 
-os_dependencies = ["virtualenv", "npm"]
+os_dependencies = ["virtualenv", "libsdl2-dev", "libsdl2-mixer-2.0-0", "libsdl2-image-2.0-0", "libsdl2-ttf-2.0-0", "npm"]
 
 def os_installer(dependencies):
     for app in dependencies:
         print("\n" +bcolors.BOLD + bcolors.CYAN + f"Installing {app} ..." + bcolors.ENDC + "\n")
-        command = "sudo apt-get install {} -y".format(str(app))
+        command = "sudo apt install {} -y".format(str(app))
         subprocess.call(command, shell=True)
         print("\n" +bcolors.BOLD + bcolors.OKGREEN + f"{app} installed successfully" + bcolors.ENDC + "\n")
         time.sleep(1)
