@@ -6,12 +6,6 @@ __pycache__/
 db.sqlite3
 
 media/*
-!media/prayer_event
-!media/live_event
-!media/prayer_audio
-media/prayer_audio/*
-media/live_event/*
-media/prayer_event/*
 
 
 # C extensions
