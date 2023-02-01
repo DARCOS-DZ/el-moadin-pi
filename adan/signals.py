@@ -13,8 +13,7 @@ from django.utils import timezone
 from .tasks import prayer_event_task, live_event_task
 import os
 
-@receiver(post_save, sender=LiveEvent)
-def live_event_signal(sender, instance, **kwargs):
+def downloader(instance, model=""):
     if instance.downloaded == False :
         audio = str(instance.audio)
         download  = wget.download(audio, out="media")
@@ -25,40 +24,31 @@ def live_event_signal(sender, instance, **kwargs):
             instance.downloaded = True
             instance.save()
         os.remove(path)
-        live_event_task(id=instance.id,schedule=datetime.now())
+        if model=="LiveEvent":
+            live_event_task(id=instance.id,schedule=datetime.now())
+        if model=="PrayerEvent":
+            now = datetime.now()
+            prayer = datetime.strptime("{} {}".format(now.strftime("%Y,%m,%d"), getattr(config, instance.prayer)), "%Y,%m,%d %H:%M:%S")
+            delta = 10 + instance.audio_duration
+            if instance.type == "before":
+                schedule = prayer - timedelta(seconds=delta)
+            else :
+                schedule = prayer + timedelta(seconds=delta)
+            print(schedule)
+            prayer_event_task(id=instance.id,schedule=schedule)
+
+@receiver(post_save, sender=LiveEvent)
+def live_event_signal(sender, instance, **kwargs):
+    downloader(model="LiveEvent", instance=instance)
 
 @receiver(post_save, sender=PrayerAudio)
 def prayer_audio_signal(sender, instance, **kwargs):
-    if instance.downloaded == False :
-        audio = str(instance.audio)
-        download  = wget.download(audio, out="media")
-        downloaded_file = str(download)
-        path = Path(downloaded_file)
-        with path.open(mode='rb') as f:
-            instance.audio = File(f, name=path.name)
-            instance.downloaded = True
-            instance.save()
+    downloader(instance=instance)
 
 @receiver(post_save, sender=PrayerEvent)
 def prayer_event_signal(sender, instance, **kwargs):
-    if instance.downloaded == False :
-        audio = str(instance.audio)
-        download  = wget.download(audio, out="media")
-        downloaded_file = str(download).encode()
-        path = Path(downloaded_file)
-        with path.open(mode='rb') as f:
-            instance.audio = File(f, name=path.name)
-            instance.downloaded = True
-            instance.save()
-        now = datetime.now()
-        prayer = datetime.strptime("{} {}".format(now.strftime("%Y,%m,%d"), getattr(config, instance.prayer)), "%Y,%m,%d %H:%M:%S")
-        delta = 10 + instance.audio_duration
-        if instance.type == "before":
-            schedule = prayer - timedelta(seconds=delta)
-        else :
-            schedule = prayer + timedelta(seconds=delta)
-        print(schedule)
-        prayer_event_task(id=instance.id,schedule=schedule)
+    downloader(model="PrayerEvent", instance=instance)
+
 
 
 @receiver(config_updated)
