@@ -91,7 +91,7 @@ def background_loop():
 
 
 
-    client = mqtt.Client(client_id=str(settings.SERIAL_NUMBER), clean_session=False)
+    client = mqtt.Client(client_id=str(settings.SERIAL_NUMBER), clean_session=True)
     client.on_connect = on_connect
     client.on_message = on_message
     client.connect(config.broker_ip, port=1883)
