@@ -2,7 +2,7 @@ from background_task import background
 from django.conf import settings
 from .models import *
 from constance import config
-from .utils import get_zigbee_state , zigbee_switch
+from adan.utils import get_zigbee_state , zigbee_switch
 
 @background(schedule=0)
 def prayer_event_task(id):
