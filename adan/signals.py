@@ -10,48 +10,45 @@ import wget
 from pathlib import Path
 import json
 from django.utils import timezone
-from .tasks import prayer_event_task
+from .tasks import prayer_event_task, live_event_task
+import os
 
 @receiver(post_save, sender=LiveEvent)
 def live_event_signal(sender, instance, **kwargs):
-    audio = str(instance.audio)
-    try:
-        from .tasks import live_event_task
+    if instance.downloaded == False :
+        audio = str(instance.audio)
+        download  = wget.download(audio, out="media")
+        downloaded_file = str(download)
+        path = Path(downloaded_file)
+        with path.open(mode='rb') as f:
+            instance.audio = File(f, name=path.name)
+            instance.downloaded = True
+            instance.save()
+        os.remove(path)
+        live_event_task(id=instance.id,schedule=datetime.now())
+
+@receiver(post_save, sender=PrayerAudio)
+def prayer_audio_signal(sender, instance, **kwargs):
+    if instance.downloaded == False :
+        audio = str(instance.audio)
+        download  = wget.download(audio, out="media")
+        downloaded_file = str(download)
+        path = Path(downloaded_file)
+        with path.open(mode='rb') as f:
+            instance.audio = File(f, name=path.name)
+            instance.downloaded = True
+            instance.save()
+
+@receiver(post_save, sender=PrayerEvent)
+def prayer_event_signal(sender, instance, **kwargs):
+    if instance.downloaded == False :
+        audio = str(instance.audio)
         download  = wget.download(audio, out="media")
         downloaded_file = str(download).encode()
         path = Path(downloaded_file)
         with path.open(mode='rb') as f:
             instance.audio = File(f, name=path.name)
-            instance.save()
-        live_event_task(id=instance.id,schedule=datetime.now())
-    except Exception as e:
-        print(e)
-
-@receiver(post_save, sender=PrayerAudio)
-def prayer_audio_signal(sender, instance, **kwargs):
-    audio = str(instance.audio)
-    try:
-        from .tasks import prayer_audio_task
-
-        download  = wget.download(audio, out="media")
-        downloaded_file = str(download).encode()
-        path = Path(downloaded_file.decode("utf-8"))
-        with path.open(mode='rb') as f:
-            instance.audio = File(f, name=path.name)
-            instance.save()
-
-    except Exception as e:
-        pass
-
-@receiver(post_save, sender=PrayerEvent)
-def prayer_event_signal(sender, instance, **kwargs):
-    audio = str(instance.audio)
-    try:
-        download  = wget.download(audio, out="media")
-        downloaded_file = str(download).encode()
-        path = Path(downloaded_file.decode("utf-8"))
-        with path.open(mode='rb') as f:
-            instance.audio = File(f, name=path.name)
+            instance.downloaded = True
             instance.save()
         now = datetime.now()
         prayer = datetime.strptime("{} {}".format(now.strftime("%Y,%m,%d"), getattr(config, instance.prayer)), "%Y,%m,%d %H:%M:%S")
@@ -63,11 +60,6 @@ def prayer_event_signal(sender, instance, **kwargs):
         print(schedule)
         prayer_event_task(id=instance.id,schedule=schedule)
 
-
-
-
-    except Exception as e:
-        pass
 
 @receiver(config_updated)
 def constance_updated(sender, key, old_value, new_value, **kwargs):
