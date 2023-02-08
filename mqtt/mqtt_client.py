@@ -37,6 +37,7 @@ def background_loop():
                 "model": "Plug",
         		"state": get_zigbee_state(),
                 "date": str(datetime.now()),
+                "topic_serial_number": settings.SERIAL_NUMBER
         	    }
             }
             message = json.dumps(json_msg,ensure_ascii=False)
