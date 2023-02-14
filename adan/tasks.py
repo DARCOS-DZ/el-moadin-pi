@@ -2,7 +2,7 @@ from background_task import background
 from django.conf import settings
 from .models import *
 from constance import config
-from adan.utils import get_zigbee_state , zigbee_switch
+from adan.utils import zigbee_switch
 import json
 
 @background(schedule=0)
@@ -34,22 +34,7 @@ def prayer_audio_task(prayer):
     # lookup user by id and send them a message
     import pygame
     try:
-        try:
-            state = get_zigbee_state()
-            if state == "off" :
-                url = f"{config.home_assistant_address}/api/services/switch/turn_on"
-                payload = json.dumps({
-                  "entity_id": config.entity_id
-                })
-                headers = {
-                  'Content-Type': 'application/json',
-                  'Authorization': f'Bearer {config.home_assistant_token}'
-                }
-                response = requests.request("POST", url, headers=headers, data=payload)
-                print(response.text)
-
-        except:
-            pass
+        zigbee_switch(state="on")
         prayer_audio = PrayerAudio.objects.filter(prayer=prayer).last()
         absolute_path = str(settings.BASE_DIR) + prayer_audio.audio.url
         pygame.mixer.init()
