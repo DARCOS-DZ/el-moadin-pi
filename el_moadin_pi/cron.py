@@ -14,8 +14,7 @@ def daily():
     config.duhr = prayers["duhr"]
     config.alasr = prayers["alasr"]
     config.almaghreb = prayers["almaghreb"]
-    config.alaicha = "16:08:30"
-    # config.alaicha = prayers["alaicha"]
+    config.alaicha = prayers["alaicha"]
 
     if config.elfajer_schedul == False :
         # verify if elfajers deadline have been crossed
