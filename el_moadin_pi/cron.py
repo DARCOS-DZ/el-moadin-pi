@@ -23,7 +23,6 @@ def daily():
             prayer_time = datetime.strptime(f"{now.strftime('%Y,%m,%d')} {prayer_time}", "%Y,%m,%d %H:%M:%S")
             prayer_diff = prayer_time - now
             if prayer_diff.total_seconds() < 0:
-                print("fdsfdsfdsfds")
                 pass
             elif prayer_diff.total_seconds() < DEADLINE:
                 print(f"{prayer} prayer time is less than 10 minutes away.")
