@@ -65,7 +65,12 @@ def constance_updated(sender, key, old_value, new_value, **kwargs):
     print(sender, key, old_value, new_value)
     current_tz = timezone.get_current_timezone()
     if key == "offset_time":
-        prayer_source = config.PRAYER_SOURCE.get("data", None)
+        if key == "offset_time":
+            try:
+                prayer_source = config.PRAYER_SOURCE.replace("'", '"')
+                prayer_source=json.loads(prayer_source)["data"]
+            except Exception as e:
+                prayer_source=config.PRAYER_SOURCE["data"]
         new_dictionary = {"data":[]}
         for prayer in prayer_source :
             elfajer=(datetime.strptime(prayer["elfajer"], '%H:%M')+timedelta(minutes=config.offset_time)).time()

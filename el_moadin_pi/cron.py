@@ -8,7 +8,7 @@ import time
 import json
 
 PRAYER_TIMES = ["elfajer", "duhr", "alasr", "almaghreb", "alaicha"]
-DEADLINE = timedelta(minutes=10)
+DEADLINE = 600
 
 def daily():
     now = datetime.now()
@@ -16,12 +16,17 @@ def daily():
     print(f"Cronjob: {now}")
 
     for prayer in PRAYER_TIMES:
-        if not getattr(config, f"{prayer}_schedul"):
-            prayer_time = datetime.strptime(f"{now.strftime('%Y,%m,%d')} {prayers[prayer]}", "%Y,%m,%d %H:%M:%S")
+        print(prayer)
+        setattr(config, f"{prayer}", prayers[prayer])
+        if getattr(config, f"{prayer}_schedul") == False :
+            prayer_time = getattr(config, f"{prayer}")
+            prayer_time = datetime.strptime(f"{now.strftime('%Y,%m,%d')} {prayer_time}", "%Y,%m,%d %H:%M:%S")
             prayer_diff = prayer_time - now
-            if prayer_diff < timedelta(0):
+            if prayer_diff.total_seconds() < 0:
+                print("fdsfdsfdsfds")
                 pass
-            elif prayer_diff < DEADLINE:
+            elif prayer_diff.total_seconds() < DEADLINE:
+                print(f"{prayer} prayer time is less than 10 minutes away.")
                 prayer_audio_task(prayer=prayer, schedule=prayer_time)
                 setattr(config, f"{prayer}_schedul", True)
 

@@ -4,6 +4,8 @@ from .models import PrayerEvent, LiveEvent, PrayerAudio
 from constance import config
 from adan.utils import zigbee_switch
 import json
+from datetime import datetime, timedelta
+
 
 def play_audio(audio_url):
     import pygame
@@ -26,27 +28,50 @@ def live_event_task(id):
     live_event = LiveEvent.objects.get(id=id)
     play_audio(live_event.audio.url)
 
-# Optimization
-# Use a dictionary to store the prayer names and config values
-schedul_configs = {
-    "elfajer": config.elfajer_schedul,
-    "duhr": config.duhr_schedul,
-    "alasr": config.alasr_schedul,
-    "almaghreb": config.almaghreb_schedul,
-    "alaicha": config.alaicha_schedul
-}
+def get_prayer_configs(now):
+    prayer_configs = {
+        "elfajer": (config.elfajer_schedul,
+                    datetime.strptime(f"{now.strftime('%Y,%m,%d')} {config.elfajer}",
+                                      "%Y,%m,%d %H:%M:%S")),
+        "duhr": (config.duhr_schedul,
+                 datetime.strptime(f"{now.strftime('%Y,%m,%d')} {config.duhr}",
+                                      "%Y,%m,%d %H:%M:%S")),
+        "alasr": (config.alasr_schedul,
+                  datetime.strptime(f"{now.strftime('%Y,%m,%d')} {config.alasr}",
+                                      "%Y,%m,%d %H:%M:%S")),
+        "almaghreb": (config.almaghreb_schedul,
+                      datetime.strptime(f"{now.strftime('%Y,%m,%d')} {config.almaghreb}",
+                                      "%Y,%m,%d %H:%M:%S")),
+        "alaicha": (config.alaicha_schedul,
+                    datetime.strptime(f"{now.strftime('%Y,%m,%d')} {config.alaicha}",
+                                      "%Y,%m,%d %H:%M:%S"))
+    }
+    return prayer_configs
+
 
 @background()
 def prayer_audio_task(prayer):
-    # lookup user by id and send them a message
+    now = datetime.now()
+    prayer_configs = get_prayer_configs(now)
+    setattr(config, f"{prayer}_schedul", False)
+
     try:
         zigbee_switch(state="on")
-        prayer_audio = PrayerAudio.objects.filter(prayer=prayer).last()
-        play_audio(prayer_audio.audio.url)
-    except:
-        if prayer == "elfajer" :
-            audio_url = "/audio/audio_azansubuh.mp3"
-        else :
-            audio_url = "/audio/audio_azan.mp3"
-        play_audio(audio_url)
-    schedul_configs[prayer] = False
+    except Exception as e:
+        print("Can't turn the zigbee switch on")
+
+    prayer_audio = PrayerAudio.objects.filter(prayer=prayer).last()
+    time_diff = prayer_configs[prayer][1] - now
+
+    if prayer_audio:
+        if abs(time_diff.total_seconds()) < 180:
+            play_audio(prayer_audio.audio.url)
+        else:
+            print(f"{prayer} prayer time is not within 1 minute from now or in the future.")
+    else:
+        print(f"No prayer audio found for {prayer}.")
+        audio_url = "/audio/audio_azansubuh.mp3" if prayer == "elfajer" else "/audio/audio_azan.mp3"
+        if abs(time_diff.total_seconds()) < 180:
+            play_audio(audio_url)
+        else:
+            print(f"{prayer} prayer time is not within 1 minute from now or in the future.")
