@@ -1,2 +1,2 @@
 source env/bin/activate ;
-./manage.py runserver ;
+./manage.py runserver 0.0.0.0:8080;
