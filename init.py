@@ -64,6 +64,8 @@ def pm2_services():
     subprocess.call(command, shell=True)
     command = 'pm2 start run_process_tasks.sh'
     subprocess.call(command, shell=True)
+    command = 'pm2 start run_mqtt_client.sh'
+    subprocess.call(command, shell=True)
 
 home_assistant_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiIyZDg5NWQ1YjFlMzM0NTM0OTA3MTc1Y2I1Njc3Yjc3MCIsImlhdCI6MTY3NDQ4MDE1OCwiZXhwIjoxOTg5ODQwMTU4fQ.aIIt-N9wtMfUTw9petvp0Ve84VsFBZ72RPweQjX9XBw"
 # set the default address
@@ -123,8 +125,6 @@ while answer not in ("y", "n"):
         home_assistant_address = input(bcolors.BOLD + bcolors.WHITE + "\nwhat is the homeassistant address of this mosque ? : "+ bcolors.ENDC)
         home_assistant_token = input(bcolors.BOLD + bcolors.WHITE + "\nwhat is the home assistant token of this mosque ? : "+ bcolors.ENDC)
         entity_id = input(bcolors.BOLD + bcolors.WHITE + "\nwhat is the entity id of the switch of this mosque ? : "+ bcolors.ENDC)
-        # broker_ip = input(bcolors.BOLD + bcolors.WHITE + "\nwhat is the broker address ? : " + bcolors.ENDC)
-        # home_assistant = input(bcolors.BOLD + bcolors.WHITE + "\nwhat is the HomeAssistant address ? : " + bcolors.ENDC)
 
         try:
             print("\n" + bcolors.BOLD + bcolors.CYAN + "We will install the os dependencies, enter your sudo password" + bcolors.ENDC)
