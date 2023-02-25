@@ -91,15 +91,12 @@ def background_loop():
     #     client.reconnect()
 
     while True:
-        client = mqtt.Client(client_id=settings.SERIAL_NUMBER, clean_session=True)
+        client = mqtt.Client(client_id=str(settings.SERIAL_NUMBER), clean_session=True)
         client.on_connect = on_connect
         client.on_message = on_message
         # client.on_disconnect = on_disconnect
         client.connect(config.broker_ip, port=1883, keepalive=60)
-        # Force the client to reconnect in case of a disconnection
-        while True:
-            try:
-                client.loop_forever
+        client.loop_forever()
 
 if __name__ == '__main__':
     background_loop()
