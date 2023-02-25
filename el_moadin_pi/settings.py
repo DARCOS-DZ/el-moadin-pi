@@ -186,7 +186,7 @@ MAX_RUN_TIME = 0
 
 CRONJOBS = [
     ('* * * * *', 'el_moadin_pi.cron.daily', '>> {}/cron.log'.format(BASE_DIR)),
-    ('* * * * *', 'el_moadin_pi.cron.send_plug_state', '>> {}/cron.log'.format(BASE_DIR)),
+    # ('* * * * *', 'el_moadin_pi.cron.send_plug_state', '>> {}/cron.log'.format(BASE_DIR)),
 ]
 
 SERIAL_NUMBER = getserial()

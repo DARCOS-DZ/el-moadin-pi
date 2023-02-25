@@ -1,13 +1,51 @@
+import background
+from django.conf import settings
+from constance import config
+import paho.mqtt.client as mqtt
+import json
+from datetime import datetime
+from django.utils import timezone
+import time
+from adan.utils import get_zigbee_state, zigbee_switch
+import os
+
+@background.task
+def send_plug_state(client):
+    while True:
+        try:
+            topic = f"raspberry_pi/{settings.SERIAL_NUMBER}"
+            # Sends an "init" message to the topic with device information.
+            init_msg = {
+                "operation": "init",
+                "sender": 1,
+                "data": {
+                    "model": "Topic",
+                    "topic_serial_number": settings.SERIAL_NUMBER,
+                    "mosque_name": config.mosque,
+                }
+            }
+            client.publish(topic, json.dumps(init_msg, ensure_ascii=False), qos=1)
+            print(init_msg)
+
+            # Publishes the current state of the device.
+            transfer_msg = {
+                "operation": "transfer",
+                "sender": 1,
+                "data": {
+                    "model": "Plug",
+                    "state": get_zigbee_state(),
+                    "date": str(datetime.now()),
+                    "topic_serial_number": settings.SERIAL_NUMBER
+                }
+            }
+            client.publish(topic, json.dumps(transfer_msg, ensure_ascii=False), qos=1)
+            print(transfer_msg)
+
+        except Exception as e:
+            print(e)
+        time.sleep(1)
+
 def background_loop():
-    import paho.mqtt.client as mqtt
-    import json
-    from datetime import datetime
-    from django.conf import settings
-    from constance import config
-    from django.utils import timezone
-    import time
-    from adan.utils import get_zigbee_state, zigbee_switch
-    import os
 
     def on_connect(client, userdata, flags, rc):
         """
@@ -20,6 +58,7 @@ def background_loop():
         topic = "raspberry_pi/{}".format(settings.SERIAL_NUMBER)
         client.subscribe(topic, qos=1)
         print("connected to:", topic)
+        send_plug_state(client)
 
     # The callback for when a PUBLISH message is received from the server.
     def on_message(client, userdata, msg):
