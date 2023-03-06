@@ -52,15 +52,13 @@ def get_prayer_configs(now):
 
 @background()
 def prayer_audio_task(prayer):
-    now = datetime.now()
-    prayer_configs = get_prayer_configs(now)
-    setattr(config, f"{prayer}_schedul", False)
-
     try:
         zigbee_switch(state="on")
     except Exception as e:
         print("Can't turn the zigbee switch on")
-
+    now = datetime.now()
+    prayer_configs = get_prayer_configs(now)
+    setattr(config, f"{prayer}_schedul", False)
     prayer_audio = PrayerAudio.objects.filter(prayer=prayer).last()
     time_diff = prayer_configs[prayer][1] - now
 

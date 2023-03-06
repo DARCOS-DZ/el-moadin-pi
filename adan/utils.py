@@ -30,12 +30,6 @@ def zigbee_switch(state=""):
             url = f"{config.home_assistant_address}/api/services/switch/turn_on"
         elif state == "off" :
             url = f"{config.home_assistant_address}/api/services/switch/turn_off"
-        else :
-          state = get_zigbee_state()
-          if state == "on" :
-              url = f"{config.home_assistant_address}/api/services/switch/turn_off"
-          elif state == "off" :
-              url = f"{config.home_assistant_address}/api/services/switch/turn_on"
 
         payload = json.dumps({
           "entity_id": config.entity_id
@@ -47,4 +41,4 @@ def zigbee_switch(state=""):
         response = requests.request("POST", url, headers=headers, data=payload)
         print(response.text)
     except:
-        pass 
+        pass
