@@ -33,17 +33,21 @@ def downloader(instance, model="",current_tz=current_tz):
         if model=="LiveEvent":
             live_event_task(id=instance.id,schedule=datetime.now(current_tz))
         if model=="PrayerEvent":
-            # Get the prayer time from the config file
-            now = datetime.now(current_tz)
-            prayer = datetime.strptime("{} {}".format(now.strftime("%Y,%m,%d"), getattr(config, instance.prayer)), "%Y,%m,%d %H:%M:%S")
-            # Calculate the time the task needs to run at
-            delta = 10 + instance.audio_duration
-            if instance.type == "before":
-                schedule = prayer - timedelta(seconds=delta)
-            else :
-                schedule = prayer + timedelta(seconds=delta)
-            # Create the task
-            prayer_event_task(id=instance.id,schedule=schedule)
+            # verify if the prayer event is scheduled
+            is_scheduled = getattr(config, f"schedule_{instance.type}_{instance.prayer}")
+            if is_scheduled == False :
+                # schedule the prayer event
+                # Get the prayer time from the config file
+                now = datetime.now(current_tz)
+                prayer = datetime.strptime("{} {}".format(now.strftime("%Y,%m,%d"), getattr(config, instance.prayer)), "%Y,%m,%d %H:%M:%S")
+                # Calculate the time the task needs to run at
+                delta = 10 + instance.audio_duration
+                if instance.type == "before":
+                    schedule = prayer - timedelta(seconds=delta)
+                else :
+                    schedule = prayer + timedelta(seconds=delta)
+                # Create the task
+                prayer_event_task(id=instance.id,schedule=schedule)
 
 @receiver(post_save, sender=LiveEvent)
 def live_event_signal(sender, instance, **kwargs):

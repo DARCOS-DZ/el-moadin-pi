@@ -8,7 +8,7 @@ import time
 import json
 
 PRAYER_TIMES = ["elfajer", "duhr", "alasr", "almaghreb", "alaicha"]
-DEADLINE = 600
+DEADLINE = 300
 
 def daily():
     now = datetime.now()

@@ -20,6 +20,7 @@ def play_audio(audio_url):
 def prayer_event_task(id):
     # lookup user by id and send them a message
     live_event = PrayerEvent.objects.get(id=id)
+    setattr(config, f"schedule_{live_event.type}_{live_event.prayer}", False)
     play_audio(live_event.audio.url)
 
 @background(schedule=0)
