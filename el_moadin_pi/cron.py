@@ -24,7 +24,8 @@ def daily():
             prayer_diff = prayer_time - now
             if prayer_diff.total_seconds() < 0:
                 pass
-            elif prayer_diff.total_seconds() < DEADLINE:
-                print(f"{prayer} prayer time is less than 10 minutes away.")
-                prayer_audio_task(prayer=prayer, schedule=prayer_time)
-                setattr(config, f"{prayer}_schedul", True)
+            else:
+                if prayer_diff.total_seconds() < DEADLINE:
+                    print(f"{prayer} prayer time is less than 10 minutes away.")
+                    prayer_audio_task(prayer=prayer, schedule=prayer_time)
+                    setattr(config, f"{prayer}_schedul", True)
