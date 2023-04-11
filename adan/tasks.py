@@ -5,6 +5,7 @@ from constance import config
 from adan.utils import zigbee_switch
 import json
 from datetime import datetime, timedelta
+import threading
 
 
 def play_audio(audio_url):
@@ -49,9 +50,23 @@ def get_prayer_configs(now):
     }
     return prayer_configs
 
+# Define a dictionary to store the flag variables for each prayer
+executed_flags = {
+    "elfajer": False,
+    "duhr": False,
+    "alasr": False,
+    "almaghreb": False,
+    "alaicha": False
+}
+
 
 @background()
 def prayer_audio_task(prayer):
+    global executed_flags
+    # Check if the task has already been executed for this prayer
+    if executed_flags[prayer]:
+        print(f"Task already executed for {prayer}. Skipping...")
+        return
     try:
         zigbee_switch(state="on")
     except Exception as e:
@@ -74,3 +89,5 @@ def prayer_audio_task(prayer):
             play_audio(audio_url)
         else:
             print(f"{prayer} prayer time is not within 1 minute from now or in the future.")
+    # Set the flag variable to indicate that the task has been executed for this prayer
+    executed_flags[prayer] = True
