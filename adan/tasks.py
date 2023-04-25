@@ -73,21 +73,16 @@ def prayer_audio_task(prayer):
         print("Can't turn the zigbee switch on")
     now = datetime.now()
     prayer_configs = get_prayer_configs(now)
-    setattr(config, f"{prayer}_schedul", False)
     prayer_audio = PrayerAudio.objects.filter(prayer=prayer).last()
     time_diff = prayer_configs[prayer][1] - now
 
     if prayer_audio:
-        if abs(time_diff.total_seconds()) < 180:
-            play_audio(prayer_audio.audio.url)
-        else:
-            print(f"{prayer} prayer time is not within 1 minute from now or in the future.")
+        play_audio(prayer_audio.audio.url)
+        setattr(config, f"{prayer}_schedul", False)
     else:
         print(f"No prayer audio found for {prayer}.")
         audio_url = "/audio/audio_azansubuh.mp3" if prayer == "elfajer" else "/audio/audio_azan.mp3"
-        if abs(time_diff.total_seconds()) < 180:
-            play_audio(audio_url)
-        else:
-            print(f"{prayer} prayer time is not within 1 minute from now or in the future.")
+        play_audio(audio_url)
+        setattr(config, f"{prayer}_schedul", False)
     # Set the flag variable to indicate that the task has been executed for this prayer
     executed_flags[prayer] = True
