@@ -81,31 +81,31 @@ After running the script, the user will see a logo and a message explaining the 
 *   Mosque Name: The user needs to input the name of the mosque.
 
 ```plaintext
-Please enter the mosque name: mosque_name
+what is the name of this mosque ? : mosque_name
 ```
 
-*   Offset Time: The user needs to input the offset time of the mosque in seconds. They can get this value from the prayer timetable of the mosque.
+*   Offset Time: The user needs to input the offset time of the mosque in minutes. They can get this value from the prayer timetable of the mosque.
 
 ```plaintext
-Please enter the offset time in seconds: 3600
+what is the offset time of this mosque ? : 1
 ```
 
 *   Home Assistant Address: The user needs to input the address of the Home Assistant instance they want to use to control the app.
 
 ```plaintext
-Please enter the Home Assistant address: http://localhost:8123
+what is the homeassistant address of this mosque ? : http://localhost:8123
 ```
 
 *   Home Assistant Token: The user needs to input the authentication token of the Home Assistant instance they want to use to control the app. They can get this value from the user profile section of the Home Assistant web interface.
 
 ```plaintext
-Please enter the Home Assistant token: abcdefghijklmnopqrstuvwxyz0123456789
+what is the home assistant token of this mosque ? : abcdefghijklmnopqrstuvwxyz0123456789
 ```
 
 *   Home Assistant Entity ID of the Switch: The user needs to input the entity ID of the Home Assistant switch they want to use to control the app. They can get this value from the entity registry section of the Home Assistant web interface.
 
 ```plaintext
-Please enter the Home Assistant entity_id of the switch: switch.mosque_speaker
+what is the entity id of the switch of this mosque ? : switch.mosque_speaker
 ```
 
 #### Step 4 - Installation Completed:
