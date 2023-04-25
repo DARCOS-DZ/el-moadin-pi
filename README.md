@@ -25,6 +25,8 @@ El Moadin Pi uses a number of open source projects to work properly:
 
 For a quick install, use the init.py script on a fresh Raspberry Pi.
 
+Note : If you don't have a Home Assistant instance on your Raspberry Pi or network [Follow this tutorial first](https://github.com/DARCOS-DZ/el-moadin-pi/blob/master/TUTO.md)
+
 #### Step 1 - Download the Script:
 
 To use the init.py script, the user needs to download it first. They can download the script from GitHub using the following command on the terminal:
@@ -90,19 +92,19 @@ what is the name of this mosque ? : mosque_name
 what is the offset time of this mosque ? : 1
 ```
 
-*   Home Assistant Address: The user needs to input the address of the Home Assistant instance they want to use to control the app.
+*   Home Assistant Address: The user needs to input the address of the Home Assistant instance they want to use to control the app [(see here)](https://github.com/DARCOS-DZ/el-moadin-pi/blob/master/TUTO.md#step-2).
 
 ```plaintext
 what is the homeassistant address of this mosque ? : http://localhost:8123
 ```
 
-*   Home Assistant Token: The user needs to input the authentication token of the Home Assistant instance they want to use to control the app. They can get this value from the user profile section of the Home Assistant web interface.
+*   Home Assistant Token: The user needs to input the authentication token of the Home Assistant instance they want to use to control the app. They can get this value from the user profile section of the Home Assistant web interface [(see here)](https://github.com/DARCOS-DZ/el-moadin-pi/blob/master/TUTO.md#step-2).
 
 ```plaintext
 what is the home assistant token of this mosque ? : abcdefghijklmnopqrstuvwxyz0123456789
 ```
 
-*   Home Assistant Entity ID of the Switch: The user needs to input the entity ID of the Home Assistant switch they want to use to control the app. They can get this value from the entity registry section of the Home Assistant web interface.
+*   Home Assistant Entity ID of the Switch: The user needs to input the entity ID of the Home Assistant switch they want to use to control the app. They can get this value from the entity registry section of the Home Assistant web interface [(see here)](https://github.com/DARCOS-DZ/el-moadin-pi/blob/master/TUTO.md#step-4).
 
 ```plaintext
 what is the entity id of the switch of this mosque ? : switch.mosque_speaker
