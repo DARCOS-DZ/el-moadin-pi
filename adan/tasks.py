@@ -64,7 +64,7 @@ executed_flags = {
 def prayer_audio_task(prayer):
     global executed_flags
     # Check if the task has already been executed for this prayer
-    if executed_flags[prayer]:
+    if executed_flags[prayer] == True:
         print(f"Task already executed for {prayer}. Skipping...")
         return
     try:
