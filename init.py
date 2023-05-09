@@ -36,7 +36,7 @@ time.sleep(1)
 print(bcolors.BOLD + bcolors.CYAN + message + bcolors.ENDC)
 
 
-os_dependencies = ["virtualenv", "libsdl2-dev", "libsdl2-mixer-2.0-0", "libsdl2-image-2.0-0", "libsdl2-ttf-2.0-0", "npm"]
+os_dependencies = ["virtualenv", "libsdl2-dev", "libsdl2-mixer-2.0-0", "libsdl2-image-2.0-0", "libsdl2-ttf-2.0-0", "npm", "redis"]
 
 def os_installer(dependencies):
     for app in dependencies:
