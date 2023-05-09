@@ -10,7 +10,9 @@ from pathlib import Path
 import json
 from django.utils import timezone
 from .tasks import prayer_event_task, live_event_task
+from django.conf import settings
 import os
+import pytz
 
 current_tz = timezone.get_current_timezone()
 
@@ -31,23 +33,34 @@ def downloader(instance, model="",current_tz=current_tz):
             os.remove(path)
         # Check what type of model the instance is and create a task to run at the appropriate time
         if model=="LiveEvent":
-            live_event_task(id=instance.id,schedule=datetime.now(current_tz))
+            task = live_event_task.apply_async(args=[instance.id], eta=datetime.now(current_tz))
         if model=="PrayerEvent":
             # verify if the prayer event is scheduled
             is_scheduled = getattr(config, f"schedule_{instance.type}_{instance.prayer}")
             if is_scheduled == False :
                 # schedule the prayer event
                 # Get the prayer time from the config file
-                now = datetime.now(current_tz)
+                tz = pytz.timezone(settings.TIME_ZONE)
+                now = datetime.now(tz)
                 prayer = datetime.strptime("{} {}".format(now.strftime("%Y,%m,%d"), getattr(config, instance.prayer)), "%Y,%m,%d %H:%M:%S")
+                prayer = tz.localize(prayer)
                 # Calculate the time the task needs to run at
+                prayer_audio = PrayerAudio.objects.filter(prayer=instance.prayer).last()
+                if prayer_audio:
+                    prayer_audio_duratuin = prayer_audio.audio_duration
+                else :
+                    if instance.prayer == "elfajer" :
+                        prayer_audio_duration = 265
+                    else :
+                        prayer_audio_duration = 163
                 delta = 10 + instance.audio_duration
+                delta_for_after = 10 + prayer_audio_duration
                 if instance.type == "before":
                     schedule = prayer - timedelta(seconds=delta)
                 else :
-                    schedule = prayer + timedelta(seconds=delta)
+                    schedule = prayer + timedelta(seconds=delta_for_after)
                 # Create the task
-                prayer_event_task(id=instance.id,schedule=schedule)
+                task = prayer_event_task.apply_async(args=[instance.id], eta=schedule)
 
 @receiver(post_save, sender=LiveEvent)
 def live_event_signal(sender, instance, **kwargs):

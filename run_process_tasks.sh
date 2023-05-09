@@ -1,2 +1,2 @@
 source env/bin/activate ;
-./manage.py process_tasks --sleep=0;
+celery -A el_moadin_pi worker --loglevel=DEBUG -B ;

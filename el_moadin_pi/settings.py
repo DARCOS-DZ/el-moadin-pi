@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 from pathlib import Path
 import os
 from el_moadin_pi.utils import getserial, prayer_source
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -43,7 +44,7 @@ INSTALLED_APPS = [
     "adan",
     'constance',
     'constance.backends.database',
-    'background_task',
+    "django_celery_results",
 ]
 
 MIDDLEWARE = [
@@ -113,6 +114,9 @@ AUTH_PASSWORD_VALIDATORS = [
 LANGUAGE_CODE = "en-us"
 
 TIME_ZONE = "Asia/Gaza"
+# TIME_ZONE = "Africa/Algiers"
+
+
 
 USE_I18N = True
 
@@ -185,20 +189,25 @@ CONSTANCE_CONFIG_FIELDSETS = {
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
-
-# tasks settings
-
-MAX_ATTEMPTS = 1
-MAX_RUN_TIME = 0
-# BACKGROUND_TASK_RUN_ASYNC = True
-
 # CRONJOBS
 
 CRONJOBS = [
-    ('*/3 * * * *', 'el_moadin_pi.cron.daily', '>> {}/cron.log'.format(BASE_DIR)),
+    ('* * * * *', 'el_moadin_pi.cron.daily', '>> {}/cron.log'.format(BASE_DIR)),
     # ('* * * * *', 'el_moadin_pi.cron.send_plug_state', '>> {}/cron.log'.format(BASE_DIR)),
 ]
 
 SERIAL_NUMBER = getserial()
 # SERIAL_NUMBER = "69335335"
 # SERIAL_NUMBER = "72113824"
+
+
+# Celery Configuration Options
+CELERY_BROKER_URL = 'redis://localhost:6379'
+CELERY_ENABLE_UTC = False
+CELERY_TIMEZONE = TIME_ZONE
+CELERY_CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_TIME_LIMIT = 30 * 60
+
+CELERY_RESULT_BACKEND = 'django-db'
+CELERY_CACHE_BACKEND = 'django-cache'
